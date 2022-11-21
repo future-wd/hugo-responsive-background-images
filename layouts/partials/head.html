@@ -1,0 +1,2 @@
+{{ $sassTemplate := resources.Get "scss/bg-images/page-bg-images.scss" }}
+{{ $style := $sassTemplate | resources.ExecuteAsTemplate "page-bg-images.scss" . | resources.ToCSS }}
