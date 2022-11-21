@@ -1,0 +1,22 @@
+{{- /*    
+
+  partials/bg-images/bg-image.html alias
+
+  add the following to head to activate module
+
+  {{ partial "bg-images/head" . }}
+  
+
+bg_images:
+- src: image.jpg 
+  id: hero
+  widths: 500 900 1200
+
+*/ -}}
+
+
+
+{{ $sassTemplate := resources.Get "scss/bg-images.scss" }}
+{{ $style := $sassTemplate | resources.ExecuteAsTemplate "css/bg-images.scss" . | toCSS | fingerprint }}
+
+<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
