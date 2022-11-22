@@ -2,8 +2,10 @@
 
 TODO:
 
-- auto add 'responsive-bg-img` via hugo, doesnt need to be in front matter but must be HTML.
-- add front matter option of lazy=true
+- add targetted images to class list for default css
+- change class to selector
+- rather than resize larger than image, resize to max size if *px (tolerance) larger than next break point down
+- add front matter option of loading=lazy
 - loop through pages and check for lazy=true and add to js???
 
 
