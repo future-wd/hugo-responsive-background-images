@@ -1,6 +1,6 @@
 {
   "name": "hugo-responsive-background-images",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Generate responsive (lazy) loading background images for HUGO easily",
   "scripts": {
     "release": "standard-version",
