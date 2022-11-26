@@ -1,0 +1,21 @@
+{
+  "name": "hugo-responsive-background-images",
+  "version": "0.0.2",
+  "description": "Generate responsive (lazy) loading background images for HUGO easily",
+  "scripts": {
+    "release": "standard-version",
+    "release:dry-run": "standard-version --dry-run",
+    "git:push": "git push --follow-tags origin master",
+    "update": "npx npm-check --update"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/future-wd/hugo-responsive-background-images.git"
+  },
+  "author": "Sean Emerson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/future-wd/hugo-responsive-background-images/issues"
+  },
+  "homepage": "https://github.com/future-wd/hugo-responsive-background-images#readme"
+}
