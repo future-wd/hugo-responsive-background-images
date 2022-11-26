@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/future-wd/hugo-responsive-background-images/issues"
   },
-  "homepage": "https://github.com/future-wd/hugo-responsive-background-images#readme"
+  "homepage": "https://github.com/future-wd/hugo-responsive-background-images#readme",
+  "devDependencies": {
+    "standard-version": "^9.5.0"
+  }
 }
