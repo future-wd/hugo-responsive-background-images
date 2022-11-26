@@ -7,6 +7,8 @@
     .selector - css selector
     .original - original image format resized to width
     .webp - webp version of image resized to width
+    .lazy - true if lazy load the image
+    .bg_color - color code for background color
 
   @access private
 
@@ -21,18 +23,18 @@
   background-image: none;
   {{- $bg_color := .bg_color | default site.Params.bg_images.placeholder_color -}}
   {{- with $bg_color -}}
-  background-color: {{ . }}
+  background-color: {{ . }};
   {{ end }}
 }
-
 {{ end }}
-// no js (assumes no webp) support or js script error!
-// js & no webp support
+
+{{- /*  no js (assumes no webp) support or js script error!
+    **  js & no webp support */ -}}
 {{ .selector }},
 .js.no-webp  {{ .selector -}}{{- if .lazy -}}.bg-loaded {{ end }} {
   background-image: url({{ .original.RelPermalink }});
 }
-// js & webp support
+{{- /* js & webp support */ -}}
 .js.webp {{ .selector -}}{{- if .lazy -}}.bg-loaded {{ end }} {
   background-image: url({{ .webp.RelPermalink }});
 }
