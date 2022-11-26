@@ -90,11 +90,19 @@ bg-images:
 
 v0.04
 
-- don't generate images wider than actual image.
-- if widths removed, generate width equal to image width if image is TOLLERANCE wider than new widest width
+- sanitize inputs and generate warnings (and error if problem generates an error e.g. no src or selector)
 
 v0.05
 
+- don't generate images wider than actual image.
+- if widths removed, generate width equal to image width if image is TOLLERANCE wider than new widest width
+
+v0.06
+
 - add element config of margin for overside image generation.
+
+v0.07
+
 - placeholder type config (lqip, dominant (css with new hugo .Color?), color code (manual entry)) with global default config.
-- add page config option of image margin for oversize image generation
+
+publish?
