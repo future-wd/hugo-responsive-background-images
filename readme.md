@@ -86,7 +86,15 @@ bg-images:
   loading: lazy # or false - optional see lazy load section for requirements
 ```
 
-##### TODO
+#### TODO
+
+v0.04
+
+- don't generate images wider than actual image.
+- if widths removed, generate width equal to image width if image is TOLLERANCE wider than new widest width
+
+v0.05
 
 - add element config of margin for overside image generation.
-- placeholder type config (lqip, dominant (css?), color code) with global default config.
+- placeholder type config (lqip, dominant (css with new hugo .Color?), color code (manual entry)) with global default config.
+- add page config option of image margin for oversize image generation
