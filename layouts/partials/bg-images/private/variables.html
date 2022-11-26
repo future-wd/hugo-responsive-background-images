@@ -34,9 +34,6 @@
     {{ $image := merge . (dict 
       "ctx" $ctx 
       "widths" (.widths | default site.Params.bg_images.widths)) }}
-    {{ range $i, $e := $image}}
-      {{ warnf "%v: %v " $i $e}}
-    {{ end }}
     {{ $images = $images | append $image }}
     {{ $selectors = $selectors | append .selector }}
     {{ if .lazy }}
