@@ -1,0 +1,16 @@
+{{- /*
+  bg-images/private/generate-js.html
+  Generates a JS file, from a JS hugo template
+  @author @sean-au
+
+  @context - page context
+
+  @access private
+
+  @example - Hugo Template
+  {{ partial "bg-images/private/generate-js" . }}
+
+*/ -}}
+{{- $js_template := resources.Get "js/bg-images.js" -}}
+{{- $js := $js_template | resources.ExecuteAsTemplate "js/bg-images.js" .  | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>

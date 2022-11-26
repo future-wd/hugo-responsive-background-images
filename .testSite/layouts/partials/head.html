@@ -1,0 +1,25 @@
+<script>
+ const noJs = document.documentElement.classList.contains('no-js');
+  if (noJs) document.documentElement.classList.remove('no-js');
+  document.documentElement.classList.add('js');
+
+  async function supportsWebp() {
+    if (!self.createImageBitmap) return false;
+    const webpData = 'data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAAAAAAfQ//73v/+BiOh/AAA=';
+    const blob = await fetch(webpData).then(r => r.blob());
+    return createImageBitmap(blob).then(() => true, () => false);
+  }
+  (async () => {
+    if(await supportsWebp()) {
+      document.documentElement.classList.add('webp');
+    } else {
+      document.documentElement.classList.add('no-webp');
+    }
+  })();
+</script>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{ if not .IsHome }}{{ .Title }} -{{ end }}{{ .Site.Title }}</title>
+{{ partial "libsass" "styles/main.scss" }}
+{{ partial "bg-images/css" . }}

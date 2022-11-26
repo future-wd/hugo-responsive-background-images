@@ -1,0 +1,36 @@
+{{/*
+
+
+  context:
+  .page - page context
+  .src - page resource file string
+  .width - resize width integer
+*/}}
+{{- /*
+  bg-images/private/generate-images.html
+  Generates original and webp format images based on image and width input.
+
+  @author @sean-au
+
+  @context
+    .page - page context
+    .src - page resource file string
+    .width - resize width integer
+
+  @returns dict:
+    .original - original format image
+    .webp - webp format image
+
+  @access private
+
+  @example - Hugo Template
+  {{- $resized := partial "bg-images/private/generate-images" (dict "page" $page.ctx "width" $width "src" $page.src) }}
+
+*/ -}}
+
+
+{{ $img := .page.Resources.GetMatch .src }}
+{{ $original := $img.Resize (printf "%vx" .width ) }}
+{{ $webp := $img.Resize (printf "%vx webp" .width ) }}
+
+{{ return (dict "original" $original "webp" $webp) }}

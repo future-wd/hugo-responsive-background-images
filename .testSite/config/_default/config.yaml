@@ -1,0 +1,11 @@
+baseURL: https://hugo-responsive-background-images.netlify.app/
+languageCode: en
+title: Hugo Responsive Background Images Test Site
+
+# disable all extra outputs
+disableKinds:
+- sitemap
+- taxonomy
+- term
+- RSS
+

@@ -1,0 +1,30 @@
+{{- /*
+  bg-images/private/print-general-css.html
+
+  Prints general css for display purposes
+  Adds selectors for targetting
+
+  @author @sean-au
+
+  @context string of comma delimited css selectors
+
+  @access private
+
+  @example - Hugo Template
+  {{ partial "bg-images/private/print-general-css" $variables.selectors }}
+
+*/ -}}
+// generic backgroung css for all selectors
+{{ . }} {
+  background-position: center center;
+  background-repeat: no-repeat; 
+  background-size: cover;
+}
+
+// webp result pending, javascript enabled. if the js snippet is not added to the HEAD,
+// this css will not have any effect as there will be no .js class present
+// if the user has a script that generates 
+.js {{ . }},{
+  background-image: none;
+}
+

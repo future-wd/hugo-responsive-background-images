@@ -1,45 +1,14 @@
-{{ range where .Site.Pages "Params.bg_images" "!=" nil }}
-/* Page: {{ .RelPermalink }} */
-  {{ $page := . }}
-  {{ $bg_images := .Params.bg_images}}
-  {{ range $bg_image := $bg_images }}
-    {{ $widths := .widths | default site.Params.bg_images.widths }}
-    {{ $src := .src }}
-    {{ $class := .class }}
-    {{ range $index, $width := sort $widths }}
-      {{ $img := $page.Resources.GetMatch $src }}
-      {{ $resized := $img.Resize (printf "%vx" . ) }}
-      {{ if eq $index 0 }}
-      {{- /* first width */ -}}
-      @media (max-width: {{ $width }}px) {
-        .{{ $class }} {
-          background-image: url({{ $resized.RelPermalink }});
-        }
-      }
-      {{ else if (ne (add $index 1) (len $widths)) }}
-      {{- /* inter width */ -}}
-      {{ $prev_width := index $widths (sub $index 1) }}
-      @media (min-width: {{ add 1 $prev_width }}px) and (max-width: {{ $width }}px) {
-        .{{ $class }} {
-          background-image: url({{ $resized.RelPermalink }});
-        }
-      }
-      {{ else }}
-      {{- /* last width */ -}}
-      {{ $prev_width := index $widths (sub $index 1) }}
-      @media (min-width: {{ add 1 $prev_width }}px) {
-        .{{ $class }} {
-          background-image: url({{ $resized.RelPermalink }});
-        }
-      }
-      {{ end }}
-    {{ end }}
-  {{ end }}
-{{ end }}
+/* stylelint-disable */
+{{- /*    
 
-.responsive-bg-img {
-  background-position: center center;
-  background-repeat: no-repeat; 
-  background-size: cover;
-}
+
+
+  context: . - page context
+
+*/ -}}
+{{ $variables := partial "bg-images/private/variables" . }}
+{{ partial "bg-images/private/print-image-css" $variables.images }}
+{{ partial "bg-images/private/print-general-css" $variables.selectors }}
+
+// not empty
 

@@ -1,0 +1,17 @@
+{{- /*
+  generate-css.html
+  Generates a CSS file, from a SCSS hugo template
+  
+  @author @sean-au
+
+  @context - page context
+
+  @access private
+
+  @example - Hugo Template
+  {{ partial "bg-images/private/generate-css" . }}
+
+*/ -}}
+{{- $sass_template := resources.Get "scss/bg-images.scss" -}}
+{{- $css := $sass_template | resources.ExecuteAsTemplate "css/bg-images.scss" . | toCSS | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">

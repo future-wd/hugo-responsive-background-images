@@ -1,0 +1,54 @@
+{{/* 
+  TODO: validate input: 
+    - src and selector string and required
+    - widths array of int's, optional
+    - provide error messages
+    - check width is not greater than image width and remove if it 
+    - if removed=true add an extra width, if image width is tollerance wider than the new widest width
+  */}}
+  {{- /*
+    bg-images/private/variables.html
+    Generates variables and returns dict of variables
+    @author @sean-au
+  
+    @context - page context
+
+    @returns dict:
+      .images - array of all images for processing (dict)
+      .selectors - comma delimited string of all bg image selectors
+      .lazy_selectors - json array of lazy load selectors for use in JS
+  
+    @access private
+  
+    @example - Hugo Template
+    {{ $variables := partial "bg-images/private/variables" . }}
+  
+  */ -}}
+{{ $images := slice }}
+{{ $selectors := slice }}
+{{ $lazy_selectors := slice}}
+
+{{ range where site.Pages "Params.bg_images" "!=" nil }}
+  {{ $ctx := .}}
+  {{ range .Params.bg_images}}
+    {{ $image := merge . (dict 
+      "ctx" $ctx 
+      "widths" (.widths | default site.Params.bg_images.widths)) }}
+    {{ range $i, $e := $image}}
+      {{ warnf "%v: %v " $i $e}}
+    {{ end }}
+    {{ $images = $images | append $image }}
+    {{ $selectors = $selectors | append .selector }}
+    {{ if .lazy }}
+      {{ $lazy_selectors = $lazy_selectors | append .selector }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $selectors = delimit $selectors ", "}}
+{{ $lazy_selectors = jsonify $lazy_selectors }}
+
+{{ return dict 
+  "images" $images
+  "selectors" $selectors
+  "lazy_selectors" $lazy_selectors }}
