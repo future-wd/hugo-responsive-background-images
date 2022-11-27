@@ -83,26 +83,28 @@ bg-images:
 - src: image1.png # page resource relative to the page's markdown file
   selector: .section--hero # css selector to which the background will be applied
   widths: [500, 900, 1200] # optional override
-  loading: lazy # or false - optional see lazy load section for requirements
+  lazy: true # or false - optional see lazy load section for requirements
 ```
 
 #### TODO
 
 v0.04
 
-- sanitize inputs and generate warnings (and error if problem generates an error e.g. no src or selector)
-
-v0.05
-
 - don't generate images wider than actual image.
 - if widths removed, generate width equal to image width if image is TOLLERANCE wider than new widest width
 
-v0.06
+- sanitize inputs and generate warnings (and error if problem generates an error e.g. no src or selector)
+  - re test current setup
+  - fix failed image resource due to incorrect path
+  - add selector
+
+
+v0.05
 
 - add element config of margin for overside image generation.
 
-v0.07
+v0.06
 
-- placeholder type config (lqip, dominant (css with new hugo .Color?), color code (manual entry)) with global default config.
+- placeholder type config (lqip, dominant (css with new hugo .Color?), color code (manual entry)) with global default config. Carefully plan config
 
 publish?

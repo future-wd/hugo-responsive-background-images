@@ -1,0 +1,28 @@
+{{/*
+  bg-images/private/utils/options-error.html 
+  Formats error message for consistency
+
+  @author @sean-au
+
+  @context (dict)
+    "val" (string) // variable value (user input)
+    "opts" (string) // correct options
+    "var" (string) // variable name in error
+    "ctx" (map) // ctx including .page and .img
+    )
+
+  @access private
+
+  @example - Go Template
+    {{ partial "bg-images/private/utils/options-error" (dict 
+    "var" "fillRatio array item"
+    "val" .
+    "opts" "2x integers in an array/slice"
+    "ctx" $params
+  ) }}
+
+*/}}
+
+{{ $message := printf "Invalid %s value of \"%v\" for bg-image %s on page %s. Valid options are %s." .var .val .ctx.img.RelPermalink .ctx.page.RelPermalink .opts }}
+{{ $error := partial "bg-images/private/utils/errorf" $message }}
+

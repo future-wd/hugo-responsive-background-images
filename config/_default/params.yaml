@@ -2,3 +2,5 @@ bg_images:
   widths: [600, 1000, 1500, 2000]
   bg_color: false
   root_margin: 25
+  min_width_difference: 30
+  suppress_width_warning: false
