@@ -13,8 +13,9 @@
   @author @sean-au
 
   @context
-    .page - page context
-    .src - page resource file string
+    .page - page 
+      .src - page resource file string
+      .ctx - page context
     .width - resize width integer
 
   @returns dict:
@@ -24,12 +25,12 @@
   @access private
 
   @example - Hugo Template
-  {{- $resized := partial "bg-images/private/generate-images" (dict "page" $page.ctx "width" $width "src" $page.src) }}
+  {{- $resized := partial "bg-images/private/generate-images" (dict "page" $page "width" $width "src") }}
 
 */ -}}
 
 
-{{ $img := .page.Resources.GetMatch .src }}
+{{ $img := .page.ctx.Resources.GetMatch .page.src }}
 {{ $original := $img.Resize (printf "%vx" .width ) }}
 {{ $webp := $img.Resize (printf "%vx webp" .width ) }}
 

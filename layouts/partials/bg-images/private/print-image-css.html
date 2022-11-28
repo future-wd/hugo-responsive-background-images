@@ -19,7 +19,7 @@
 {{-  range $page := . }}
   /* Page: {{ $page.ctx.RelPermalink }} */
   {{- range $index, $width := sort $page.widths }}
-    {{- $resized := partial "bg-images/private/generate-images" (dict "page" $page.ctx "width" $width "src" $page.src) }}
+    {{- $resized := partial "bg-images/private/generate-images" (dict "page" $page "width" $width) }}
     {{- $params := (dict
       "original" $resized.original
       "webp" $resized.webp
