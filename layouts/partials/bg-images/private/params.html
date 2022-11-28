@@ -1,11 +1,3 @@
-{{/* 
-  TODO: validate input: 
-    - src and selector string and required
-    - widths array of int's, optional
-    - provide error messages
-    - check width is not greater than image width and remove if it 
-    - if removed=true add an extra width, if image width is tollerance wider than the new widest width
-  */}}
   {{- /*
     bg-images/private/variables.html
     Generates variables and returns dict of variables
@@ -35,7 +27,7 @@
     {{ partial "bg-images/private/sanitize-inputs" (merge . (dict "ctx" $ctx)) }}
     {{/* santize widths */}}
     {{ $new_widths := partial "bg-images/private/utils/sanitize-widths" (dict 
-      "page" $ctx
+      "ctx" $ctx
       "img" ($ctx.Resources.Get .src)
       "widths" (.widths | default site.Params.bg_images.widths)
       "fill_ratio" false

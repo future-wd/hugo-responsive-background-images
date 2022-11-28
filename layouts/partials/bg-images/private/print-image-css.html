@@ -4,11 +4,11 @@
 
   @author @sean-au
 
-  @context dict:
-    - src: image.jpg 
-      selector: .selector
-      widths: [500, 900] 
-      page: {page context}
+  @context slice of dicts: (images) inlcuding:
+    .src: image.jpg 
+    .selector: .selector
+    .widths: [500, 900] 
+    .ctx: {image's page context}
 
   @access private
 
@@ -16,30 +16,27 @@
   {{ partial "bg-images/private/print-image-css" $variables.images }}
 
 */ -}}
-{{-  range $page := . }}
-  /* Page: {{ $page.ctx.RelPermalink }} */
-  {{- range $index, $width := sort $page.widths }}
-    {{- $resized := partial "bg-images/private/generate-images" (dict "page" $page "width" $width) }}
+{{-  range $image := . }}
+  /* Page: {{ $image.ctx.RelPermalink }} */
+  {{- range $index, $width := sort $image.widths }}
+    {{- $resized := partial "bg-images/private/generate-images" (dict "image" $image "width" $width) }}
     {{- $params := (dict
-      "original" $resized.original
-      "webp" $resized.webp
-      "selector" $page.selector
-      "lazy" $page.lazy
-      "bg_color" $page.bg_color ) }}
+      "resized" $resized
+      "image" $image ) -}}
     {{- if eq $index 0 }}
     {{- /* first width */ -}}
     @media (max-width: {{ $width }}px) {
       {{ partial "bg-images/private/css-images" $params }}
     }
-    {{- else if (ne (add $index 1) (len $page.widths)) }}
+    {{- else if (ne (add $index 1) (len $image.widths)) }}
     {{- /* inter widths */ -}}
-    {{- $prev_width := index $page.widths (sub $index 1) -}}
+    {{- $prev_width := index $image.widths (sub $index 1) -}}
     @media (min-width: {{ add 1 $prev_width }}px) and (max-width: {{ $width }}px) {
       {{ partial "bg-images/private/css-images" $params }}
     }
     {{- else }}
     {{- /* last width */ -}}
-    {{- $prev_width := index $page.widths (sub $index 1) -}}
+    {{- $prev_width := index $image.widths (sub $index 1) -}}
     @media (min-width: {{ add 1 $prev_width }}px) {
       {{ partial "bg-images/private/css-images" $params }}
     }

@@ -89,7 +89,7 @@
 {{ end }}
 
 {{ with .placeholder }}
-  {{ if ne . true }}
+  {{ if ne (printf "%T" .) "string"  }}
     {{ partial "bg-images/private/utils/options-error" (dict 
     "var" "placeholder"
     "val" .

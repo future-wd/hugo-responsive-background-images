@@ -4,12 +4,13 @@
   @author @sean-au
 
   @context dict
-    .selector - css selector
-    .original - original image format resized to width
-    .webp - webp version of image resized to width
-    .lazy - true if lazy load the image
-    .bg_color - color code for background color
-
+    .image
+      .selector - css selector
+      .lazy - true if lazy load the image
+    .resized
+      .original - original image format resized to width
+      .webp - webp version of image resized to width
+  
   @access private
 
   @example - Hugo Template
@@ -17,25 +18,27 @@
 
 */ -}}
 
-{{ if .lazy }}
+{{ if .image.lazy }}
 
-{{ .selector }} .js {
-  background-image: none;
-  {{- $bg_color := .bg_color | default site.Params.bg_images.placeholder_color -}}
-  {{- with $bg_color -}}
-  background-color: {{ . }};
+  {{ if eq .image.placeholder "lqip" }}
+    {{ .image.selector }} .js {
+      background-image: url({{ .resized.lqip }});;
+    }
+  {{ else }}
+    {{ .image.selector }} .js {
+      background-image: none;
+    }
   {{ end }}
-}
 {{ end }}
 
 {{- /*  no js (assumes no webp) support or js script error!
     **  js & no webp support */ -}}
-{{ .selector }},
-.js.no-webp  {{ .selector -}}{{- if .lazy -}}.bg-loaded {{ end }} {
-  background-image: url({{ .original.RelPermalink }});
+{{ .image.selector }},
+.js.no-webp  {{ .image.selector -}}{{- if .image.lazy -}}.bg-loaded {{ end }} {
+  background-image: url({{ .resized.original.RelPermalink }});
 }
 {{- /* js & webp support */ -}}
-.js.webp {{ .selector -}}{{- if .lazy -}}.bg-loaded {{ end }} {
-  background-image: url({{ .webp.RelPermalink }});
+.js.webp {{ .image.selector -}}{{- if .image.lazy -}}.bg-loaded {{ end }} {
+  background-image: url({{ .resized.webp.RelPermalink }});
 }
 

@@ -11,6 +11,6 @@ bg_images:
 - src: image3.png
   selector: .third-bg
   lazy: true
-  # placeholder: #000
+  placeholder: lqip
 --- 
 
