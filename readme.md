@@ -97,10 +97,25 @@ v0.04
 v0.05
 
 - input sanitization does not catch error if .src does not match image resource
-- add element config of margin for overside image generation.
+- add element config of margin for overside image generation for specific widths (will have to specify widths as array of maps and array)
+  e.g.
+  widths:
+  - width: 600
+  - width: 900
+    oversize: 100
+  OR
+  widths: [600, 900]
 
 v0.06
 
 - placeholder type config (lqip, dominant (css with new hugo .Color?), color code (manual entry)) with global default config. Carefully plan config
+- implemented without inline lqip.. needs to be tested!!! 
+- also look at changing gif width to gif div factor, and inline if small enough
+
+# md
+bg-image:
+- src: image1.jpg
+  selector: .test
+  placeholder: lqip/dominant/color code
 
 publish?

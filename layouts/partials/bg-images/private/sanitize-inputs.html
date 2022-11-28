@@ -87,3 +87,14 @@
   ) }}
   {{ end }}
 {{ end }}
+
+{{ with .placeholder }}
+  {{ if ne . true }}
+    {{ partial "bg-images/private/utils/options-error" (dict 
+    "var" "placeholder"
+    "val" .
+    "opts" "a string of either lqip, dominant or a css color code"
+    "ctx" $error_ctx
+  ) }}
+  {{ end }}
+{{ end }}

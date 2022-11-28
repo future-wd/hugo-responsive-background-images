@@ -4,3 +4,6 @@ bg_images:
   root_margin: 25
   min_width_difference: 30
   suppress_width_warning: false
+  lqip_placeholder:
+    width: 100
+    blur_amount: 5

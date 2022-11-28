@@ -11,7 +11,6 @@ bg_images:
 - src: image3.png
   selector: .third-bg
   lazy: true
-- src: image3.png
-  selector: .test
+  # placeholder: #000
 --- 
 

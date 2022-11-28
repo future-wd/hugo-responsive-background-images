@@ -7,7 +7,7 @@
 
 */ -}}
 {{- $params := partial "bg-images/private/params" . -}}
-{{- $list := $params.lazy_selecparams -}}
+{{- $list := $params.lazy_selector -}}
 const list = {{ $list }};
 {{ $rootMargin := site.Params.bg_images.root_margin | default 0 }}
 const options = {
