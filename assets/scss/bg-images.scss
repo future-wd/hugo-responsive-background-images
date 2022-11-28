@@ -6,9 +6,9 @@
   context: . - page context
 
 */ -}}
-{{ $variables := partial "bg-images/private/variables" . }}
-{{ partial "bg-images/private/print-image-css" $variables.images }}
-{{ partial "bg-images/private/print-general-css" $variables.selectors }}
+{{ $params := partial "bg-images/private/params" . }}
+{{ partial "bg-images/private/print-image-css" $params.images }}
+{{ partial "bg-images/private/print-general-css" $params.selectors }}
 
 // not empty
 

@@ -5,14 +5,16 @@
 
   @author @sean-au
 
-  @context String (error message)
+  @context dict
+    .message - error message
+    .module - module name
 
   @access public
 
   @example - Go Template
-  {{ partial "hri/private/error" $message }}
+  {{ partial "hri/private/error" (dict "message" "error message" "module" "Hugo Responsive Images") }}
 */}}
-{{ $header := "Hugo Responsive Background Images" }}
-{{ errorf "\n%s:\n%s" $header . }}
+
+{{ errorf "\n%s:\n%s" .module .message }}
 
 {{ return true }}

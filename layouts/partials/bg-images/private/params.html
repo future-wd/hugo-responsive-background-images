@@ -32,7 +32,7 @@
   {{ $ctx := .}}
   {{ range .Params.bg_images}}
     {{/* sanitize user inputs */}}
-    {{ partial "bg-images/private/validate-variables" (merge . (dict "ctx" $ctx)) }}
+    {{ partial "bg-images/private/sanitize-inputs" (merge . (dict "ctx" $ctx)) }}
     {{/* santize widths */}}
     {{ $new_widths := partial "bg-images/private/utils/sanitize-widths" (dict 
       "page" $ctx

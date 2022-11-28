@@ -12,6 +12,6 @@ bg_images:
   selector: .third-bg
   lazy: true
 - src: image3.png
-  selector: .text
+  selector: .test
 --- 
 

@@ -92,15 +92,11 @@ v0.04
 
 - don't generate images wider than actual image.
 - if widths removed, generate width equal to image width if image is TOLLERANCE wider than new widest width
-
-- sanitize inputs and generate warnings (and error if problem generates an error e.g. no src or selector)
-  - re test current setup
-  - fix failed image resource due to incorrect path
-  - add selector
-
+- markdown parameters are sanitized with error messages
 
 v0.05
 
+- input sanitization does not catch error if .src does not match image resource
 - add element config of margin for overside image generation.
 
 v0.06

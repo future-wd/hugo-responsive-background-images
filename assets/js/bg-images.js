@@ -6,8 +6,8 @@
   context: . - page context
 
 */ -}}
-{{- $vars := partial "bg-images/private/variables" . -}}
-{{- $list := $vars.lazy_selectors -}}
+{{- $params := partial "bg-images/private/params" . -}}
+{{- $list := $params.lazy_selecparams -}}
 const list = {{ $list }};
 {{ $rootMargin := site.Params.bg_images.root_margin | default 0 }}
 const options = {
@@ -20,8 +20,6 @@ const loadedClass = 'bg-loaded';
 
 document.addEventListener('DOMContentLoaded', () => {
   const lazyBgImages = document.querySelectorAll(list);
-
-
 
   if ('IntersectionObserver' in window) {
      // add bg-lazy class to show js has picked up the selector
