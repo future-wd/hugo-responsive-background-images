@@ -1,9 +1,14 @@
 bg_images:
   widths: [600, 1000, 1500, 2000]
-  bg_color: false
   root_margin: 25
   min_width_difference: 30
   suppress_width_warning: false
-  lqip_placeholder:
-    width: 100
-    blur_amount: 5
+  placeholder: false
+  # jpg_quality: 70
+  # webp_quality: 70
+  lqip:
+    div: 1.5
+    blur: 0
+    quality: 20
+    # jpg_quality: 70
+    # webp_quality: 70

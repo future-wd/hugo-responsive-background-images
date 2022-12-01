@@ -6,9 +6,6 @@
   context: . - page context
 
 */ -}}
-{{ $params := partial "bg-images/private/params" . }}
-{{ partial "bg-images/private/print-image-css" $params.images }}
-{{ partial "bg-images/private/print-general-css" $params.selectors }}
-
-// not empty
+{{ partial "bg-images/private/print/media-queries" .images }}
+{{ partial "bg-images/private/print/general-css" (dict "selectors" .selectors "not_lazy_selectors" .not_lazy_selectors) }}
 

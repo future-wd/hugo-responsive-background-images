@@ -11,4 +11,5 @@
   {{ partial "bg-images/hs" . }}
 
 */ -}}
-{{ partial "bg-images/private/generate-js" . }}
+{{ $params := .Scratch.Get "bg_params" }}
+{{ partial "bg-images/private/gen/js-resource" $params }}

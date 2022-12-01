@@ -1,0 +1,43 @@
+{{- /*
+  bg-images/private/print-image-css.html
+  Prints image css with breakpoints
+
+  @author @sean-au
+
+  @context slice of dicts: (images) inlcuding:
+    .src: image.jpg 
+    .selector: .selector
+    .widths: [500, 900] 
+    .ctx: {image's page context}
+
+  @access private
+
+  @example - Hugo Template
+  {{ partial "bg-images/private/print-image-css" $variables.images }}
+
+*/ -}}
+{{-  range $image := . }}
+  /* Page: {{ $image.ctx.RelPermalink }} */
+  {{ $count := 0 }}
+  {{ $prev_width := "" }}
+
+  {{- range $width := $image.widths_resized }}
+  {{- if eq $count 0 }}
+  @media only screen and (max-width: {{ .width }}px) {
+    {{ partial "bg-images/private/print/image-css" (dict "resized" .resized "image" $image) }}
+  }
+  {{- else if (ne (add $count 1) (len $image.widths_resized)) }}
+  @media only screen and (min-width: {{ add 0.1 $prev_width }}px) and (max-width: {{ .width }}px) {
+    {{ partial "bg-images/private/print/image-css" (dict "resized" .resized "image" $image) }}
+  }
+  {{- else }}
+  @media only screen and (min-width: {{ add 0.1 $prev_width }}px) {
+    {{ partial "bg-images/private/print/image-css" (dict "resized" .resized "image" $image) }}
+  }
+  {{- end }}
+  {{ $prev_width = .width }}
+  {{ $count = add 1 $count }}
+  {{- end }}
+
+
+{{- end }}

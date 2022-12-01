@@ -6,10 +6,11 @@
   context: . - page context
 
 */ -}}
-{{- $params := partial "bg-images/private/params" . -}}
-{{- $list := $params.lazy_selector -}}
+{{- /*$params := partial "bg-images/private/params/params" . */ -}}
+
+{{- $list := .lazy_selectors | jsonify -}}
 const list = {{ $list }};
-{{ $rootMargin := site.Params.bg_images.root_margin | default 0 }}
+{{ $rootMargin := .config.root_margin }}
 const options = {
   rootMargin: {{ printf "'0px 0px %vpx 0px'" $rootMargin }},
 }

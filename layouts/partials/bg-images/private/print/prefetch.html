@@ -1,0 +1,67 @@
+{{- /*
+  bg-images/private/print/prefetch.html
+    Prints prefetch tags. Enables browser to download non lazyloaded 
+    bg-images before css has been fully downloaded and parsed
+
+  @author @sean-au
+
+  @context dict 
+    .params - $params
+    .ctx - current page context
+
+  @access private
+
+  @example - Hugo Template
+  {{ partial "bg-images/private/print/prefetch" (dict "params" $params "ctx" .) }}
+
+*/ -}}
+
+{{/* add non lazyload images of current page to slice */}}
+{{ $prefetch_images := slice }}
+{{ $prefetch_lqip := slice }}
+{{ range .params.images }}
+  {{ if eq .ctx.RelPermalink $.ctx.RelPermalink }}
+    {{ if ne .lazy true }}
+      {{ $prefetch_images = $prefetch_images | append . }}
+    {{ else if (eq .placeholder "lqip") }}
+      {{ $prefetch_lqip = $prefetch_lqip | append . }}
+    {{end }}
+  {{ end }}
+{{ end }}
+
+{{/* generate tags. type="image/webp" helps ensure that
+  **  non webp browsers don't waste time downloading */}}
+{{ range $index, $image := $prefetch_images }}
+  {{ $count := 0 }}
+  {{ $prev_width := "" }}
+  {{ range .widths_resized }}
+    {{- if eq $count 0 }}
+    <link rel="preload" type="image/webp" as="image" href="{{ .resized.webp.RelPermalink }}" media="(max-width: {{ .width -}}px)">
+    {{- else if (ne (add $count 1) (len $image.widths_resized)) }}
+    <link rel="preload" type="image/webp" as="image" href="{{ .resized.webp.RelPermalink }}" media="(min-width: {{ add 0.1 $prev_width -}}px) and (max-width: {{ .width -}}px)">
+    {{- else }}
+    <link rel="preload" type="image/webp" as="image" href="{{ .resized.webp.RelPermalink }}" media="(min-width: {{ add 0.1 $prev_width -}}px)">
+    {{ end }}
+    {{ $prev_width = .width }}
+    {{ $count = add 1 $count }}
+  {{ end }}
+{{ end }}
+
+{{ range $index, $image := $prefetch_lqip }}
+  {{ $count := 0 }}
+  {{ $prev_width := "" }}
+  {{ range .widths_resized }}
+    {{- if eq $count 0 }}
+    <link rel="preload" type="image/webp" as="image" href="{{ .resized.lqip_webp.RelPermalink }}" media="(max-width: {{ .width -}}px)">
+    {{- else if (ne (add $count 1) (len $image.widths_resized)) }}
+    <link rel="preload" type="image/webp" as="image" href="{{ .resized.lqip_webp.RelPermalink }}" media="(min-width: {{ add 0.1 $prev_width -}}px) and (max-width: {{ .width -}}px)">
+    {{- else }}
+    <link rel="preload" type="image/webp" as="image" href="{{ .resized.lqip_webp.RelPermalink }}" media="(min-width: {{ add 0.1 $prev_width -}}px)">
+    {{ end }}
+    {{ $prev_width = .width }}
+    {{ $count = add 1 $count }}
+  {{ end }}
+{{ end }}
+
+
+

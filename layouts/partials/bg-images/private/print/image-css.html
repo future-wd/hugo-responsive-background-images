@@ -3,12 +3,13 @@
   Prints css in template below, including relative permalink to original & webp image
   @author @sean-au
 
-  @context dict
+  @context dict including
     .image
       .selector - css selector
       .lazy - true if lazy load the image
     .resized
       .original - original image format resized to width
+      .jpg - jpg version
       .webp - webp version of image resized to width
   
   @access private
@@ -19,14 +20,25 @@
 */ -}}
 
 {{ if .image.lazy }}
-
   {{ if eq .image.placeholder "lqip" }}
-    {{ .image.selector }} .js {
-      background-image: url({{ .resized.lqip }});;
-    }
+  .js.webp {{ .image.selector }}{
+    background-image: url({{ .resized.lqip_webp }});
+  }
+  .js.no-webp {{ .image.selector }}{
+    background-image: url({{ .resized.lqip }});
+  }
   {{ else }}
-    {{ .image.selector }} .js {
-      background-image: none;
+  .js {{ .image.selector}} {
+    {{ if .image.placeholder }}
+      {{ if eq .image.placeholder "dominant" }}
+        {{ $dominant := .resized.single.Colors }}
+        {{ $dominant = index $dominant 0 }}
+        background-color: {{ $dominant }};
+      {{ else if (ne .image.placeholder "lqip")}}
+        background-color: {{ .image.placeholder }};
+      {{ end }}
+    {{ end }}
+    background-image: none;
     }
   {{ end }}
 {{ end }}
@@ -35,7 +47,7 @@
     **  js & no webp support */ -}}
 {{ .image.selector }},
 .js.no-webp  {{ .image.selector -}}{{- if .image.lazy -}}.bg-loaded {{ end }} {
-  background-image: url({{ .resized.original.RelPermalink }});
+  background-image: url({{ .resized.jpg.RelPermalink }});
 }
 {{- /* js & webp support */ -}}
 .js.webp {{ .image.selector -}}{{- if .image.lazy -}}.bg-loaded {{ end }} {

@@ -2,6 +2,10 @@
 
 This module generates background images at specified widths and generates CSS with respective breakpoints. There is an option to lazyload. All you need to do is specify the image (page resource) and CSS selector on the page's front matter.
 
+Non lazyloaded images are prefetched so they start to load before the browser has downloaded and parsed the css file.
+
+LQIP placeholders are still under development.
+
 ## Installation
 
 ### Initialize project
@@ -74,6 +78,12 @@ Before `</body>` you need to add the following partial:
 bg_images:
   widths: [600, 1000, 1500, 2000] # resize widths.
   root_margin: 25 # pixels - distance below screen that image load will be triggered
+  min_width_difference: 30 # tolerance for creating resize width of image width if image is narrower than widths
+  suppress_width_warning: false # suppress warning that image is too narrow
+  placeholder: false # default placeholder type for lazy loaded images
+  lqip:
+    div: 4
+    blur: 5
 ```
 
 ### On page config - Front matter
@@ -83,39 +93,50 @@ bg-images:
 - src: image1.png # page resource relative to the page's markdown file
   selector: .section--hero # css selector to which the background will be applied
   widths: [500, 900, 1200] # optional override
-  lazy: true # or false - optional see lazy load section for requirements
+  lazy: true # optional see lazy load section for requirements
+  placeholder: lqip/dominant/css color code # optional
+  lqip: # optional override 
+    div: 4
+    blur: 5
 ```
 
-#### TODO
+### Change log
 
 v0.04
 
 - don't generate images wider than actual image.
-- if widths removed, generate width equal to image width if image is TOLLERANCE wider than new widest width
+- if widths removed, generate width equal to image width if image is TOLERANCE wider than new widest width
 - markdown parameters are sanitized with error messages
+- placeholder option of lqip/dominant/color code
+
+#### TODO
 
 v0.05
 
+- prefetch lazy webp placeholders
+- fix placeholder blur
+- change .resize.original and .resize.jpg to .resize.fallback and add configuration to disable jpg conversion
+- add config santize
+- add option of disable_jpg=true
+- add placeholder: jpg_quality, webp_quality and general jpg_quality, webp_quality
 - input sanitization does not catch error if .src does not match image resource
-- add element config of margin for overside image generation for specific widths (will have to specify widths as array of maps and array)
-  e.g.
+- add fill ratio and oversize option to each width e.g.
   widths:
   - width: 600
-  - width: 900
+    fill_ratio: [9,16]
     oversize: 100
-  OR
-  widths: [600, 900]
-
-v0.06
-
-- placeholder type config (lqip, dominant (css with new hugo .Color?), color code (manual entry)) with global default config. Carefully plan config
-- implemented without inline lqip.. needs to be tested!!! 
-- also look at changing gif width to gif div factor, and inline if small enough
+  *OR*
+  widths: [600, 900] (conditional transformation is nearly complete already)
+- prefetch lazyload images after domcontentloaded fired
 
 # md
 bg-image:
 - src: image1.jpg
   selector: .test
+  lazy: true
   placeholder: lqip/dominant/color code
+  lqip:
+    blur: 5
+    div: 5
 
 publish?

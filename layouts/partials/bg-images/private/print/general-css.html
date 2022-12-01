@@ -1,0 +1,34 @@
+{{- /*
+  bg-images/private/print-general-css.html
+
+  Prints general css for display purposes
+  Adds selectors for targetting
+
+  @author @sean-au
+
+  @context dict
+    .selectors - array of css selectors (strings)
+    .not_lazy_selectors - array of non lazy load selectors (strings)
+
+  @access private
+
+  @example - Hugo Template
+  {{ partial "bg-images/private/print-general-css" $variables.selectors }}
+
+*/ -}}
+{{- /* generic background css for all selectors
+    ** this can be extended on a per image basis easily */ -}}
+{{ delimit .selectors ", " }} {
+  background-position: center center;
+  background-repeat: no-repeat; 
+  background-size: cover;
+}
+
+{{- /*
+    ** webp result pending, javascript enabled. if the js snippet is not added to the HEAD,
+    ** this css will not have any effect as there will be no .js class present
+    ** if the user has a script that generates 
+    ** this is not used for lazy loading images to avoid conflict and speed up placeholder   */ -}}
+{{ range .not_lazy_selectors }}.js {{ . }}, {{ end }}{
+  background-image: none;
+}
