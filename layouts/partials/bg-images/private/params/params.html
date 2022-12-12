@@ -10,6 +10,7 @@
 {{/* check for images, and their params and merge }}
 
 {{ range where site.Pages "Params.bg_images" "!=" nil }}
+  {{ warnf "page is %v" .RelPermalink }}
   {{ $ctx := . }}
   {{ with .Params.bg_images }}
     {{ errorf "page exists"}}
