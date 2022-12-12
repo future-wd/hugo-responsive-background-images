@@ -21,10 +21,13 @@
 
 */ -}}
 
+{{/* temp variable */}}
+{{ $c := site.Params.bg_images }}
+
 {{ $img := .image.ctx.Resources.GetMatch .image.src }}
-{{ $original := $img.Resize (printf "%vx" .width ) }}
-{{ $jpg := $img.Resize (printf "%vx jpeg q75" .width ) }}
-{{ $webp := $img.Resize (printf "%vx webp q75" .width ) }}
+{{ $original := $img.Resize (printf "%vx q%v" .width $c.quality) }}
+{{ $jpg := $img.Resize (printf "%vx jpeg q%v" .width $c.quality) }}
+{{ $webp := $img.Resize (printf "%vx webp q%v" .width $c.quality) }}
 {{ $lqip := false }}
 {{ $lqip_webp := false }}
 {{ $single := false }}

@@ -6,9 +6,11 @@ bg_images:
   placeholder: false
   # jpg_quality: 70
   # webp_quality: 70
+  quality: 75
   lqip:
     div: 1.5
     blur: 0
     quality: 20
     # jpg_quality: 70
     # webp_quality: 70
+  lazy: false

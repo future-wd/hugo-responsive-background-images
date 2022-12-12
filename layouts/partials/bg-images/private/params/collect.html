@@ -1,0 +1,12 @@
+{{ $params := dict
+  "blur" .lqip.blur
+  "div" .lqip.div
+  "quality" .lqip.quality
+  "widths" .widths
+  "placeholder" .placeholder
+  "difference" .min_width_difference
+  "suppress" .suppress_width_warning 
+  "root_margin" .root_margin
+  "lazy" .lazy }}
+{{/* partial "bg-images/private/params/sanitize-config" . */}}
+{{ return $params }}

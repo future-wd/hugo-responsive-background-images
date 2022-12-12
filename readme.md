@@ -29,8 +29,6 @@ Optionally add `<html class="no-js">`
 
 Then add the following to top of `<head>` which will replace `no-js` with `js` and add either `webp` or `no-webp`.
 
-n.b if you use `future-wd/hugo-responsive-images`, noscript support relies on `no-js` being hard coded.
-
 ```js
 <script>
  const noJs = document.documentElement.classList.contains('no-js');
@@ -90,14 +88,18 @@ bg_images:
 
 ```yaml
 bg-images:
-- src: image1.png # page resource relative to the page's markdown file
-  selector: .section--hero # css selector to which the background will be applied
-  widths: [500, 900, 1200] # optional override
-  lazy: true # optional see lazy load section for requirements
-  placeholder: lqip/dominant/css color code # optional
-  lqip: # optional override 
-    div: 4
-    blur: 5
+  widths: [...]
+  root_margin:
+  ... 
+  images:
+  - src: image1.png # page resource relative to the page's markdown file
+    selector: .section--hero # css selector to which the background will be applied
+    widths: [500, 900, 1200] # optional override
+    lazy: true # optional see lazy load section for requirements (still experimental)
+    placeholder: lqip/dominant/css color code # optional
+    lqip: # optional override 
+      div: 4
+      blur: 5
 ```
 
 ### Change log
@@ -111,13 +113,15 @@ v0.04
 
 #### TODO
 
-v0.05
+v0.0.5
 
-- prefetch lazy webp placeholders
-- fix placeholder blur
+- use common utils - move to github repo - test 
+- create options array, populate from image specific config then page params then site params
+- use resources.Copy to rename lqip image resource for easy debug in browser
 - change .resize.original and .resize.jpg to .resize.fallback and add configuration to disable jpg conversion
 - add config santize
 - add option of disable_jpg=true
+- option for publish scss rather than compile to css and gen .RelPermalink
 - add placeholder: jpg_quality, webp_quality and general jpg_quality, webp_quality
 - input sanitization does not catch error if .src does not match image resource
 - add fill ratio and oversize option to each width e.g.
@@ -128,6 +132,10 @@ v0.05
   *OR*
   widths: [600, 900] (conditional transformation is nearly complete already)
 - prefetch lazyload images after domcontentloaded fired
+
+v0.0.6
+- prefetch lazy webp placeholders
+- fix placeholder blur, currently looks great but increases lqip size x5
 
 # md
 bg-image:

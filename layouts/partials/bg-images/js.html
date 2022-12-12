@@ -9,7 +9,9 @@
 
   @example - Hugo Template
   {{ partial "bg-images/hs" . }}
+  {{ $params := .Scratch.Get "bg_params" }}
 
+  {{ partialCached "bg-images/private/gen/js-resource" $params . }}
 */ -}}
-{{ $params := .Scratch.Get "bg_params" }}
-{{ partial "bg-images/private/gen/js-resource" $params }}
+{{/* cache the partial so its only run once */}}
+

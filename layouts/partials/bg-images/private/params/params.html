@@ -1,48 +1,29 @@
-  {{- /*
-    bg-images/private/variables.html
-    Generates variables and returns dict of variables
-    @author @sean-au
-  
-    @context - page context
-
-    @returns dict:
-      .images - array of all images for processing (dict)
-      .selectors - comma delimited string of all bg image selectors
-      .lazy_selectors - json array of lazy load selectors for use in JS
-  
-    @access private
-  
-    @example - Hugo Template
-    {{ $variables := partial "bg-images/private/variables" . }}
-  
-  */ -}}
 {{ $images := slice }}
 {{ $selectors := slice }}
 {{ $lazy_selectors := slice }}
 {{ $not_lazy_selectors := slice }}
 
-{{/* import sanitized config params */}}
-{{ $config := partial "bg-images/private/params/config" . }}
+{{/* import sanitized site config params */}}
+{{ $config := partial "bg-images/private/params/collect" site.Params.bg_images }}
+{{ warnf "site config: %v" $config}}
+
+{{/* check for images, and their params and merge }}
 
 {{ range where site.Pages "Params.bg_images" "!=" nil }}
-  {{ $ctx := .}}
-  {{ range $image := .Params.bg_images}}
-    {{/* sanitize user inputs */}}
-    {{ partial "bg-images/private/params/sanitize-inputs" (merge $image (dict "ctx" $ctx)) }}
+  {{ $ctx := . }}
+  {{ with .Params.bg_images }}
+    {{ errorf "page exists"}}
+    {{ $page_config := partial "bg-images/private/params/collect" . }}
+    {{ warnf "page %v config: %v" $ctx.RelPermalink $page_config}}
+    {{ $config = merge $config $page_config}}
+    {{ warnf "page config merged: %v" $config}}
 
-    {{/* collect params from different places and merge */}}
-    {{ $lqip := dict
-      "blur" ($image.lqip.blur | default $config.blur) 
-      "div" ($image.lqip.div | default $config.div)
-      "quality" ($image.lqip.quality | default $config.quality) }}
-    {{ $placeholder := $image.placeholder | default $config.placeholder }}
-    {{ $image = merge $image (dict 
-      "ctx" $ctx 
-      "lqip" $lqip
-      "placeholder" $placeholder) }}
+    {{ range .images }}
+      {{ $image_config := partial "bg-images/private/params/collect" .}}
+      {{ warnf "image config: %v" $image_config}}
+      {{ $config = merge $config $image_config}}
+      {{ warnf "image config merged: %v" $config}}
 
-    {{/* modify params post sanitization */}}
-    {{ $widths := $image.widths | default $config.widths }}
     {{ $widths = sort $widths }}
     {{ $sanitized_widths := partial "bg-images/private/utils/sanitize-widths" (dict 
       "ctx" $ctx
@@ -51,40 +32,9 @@
       "fill_ratio" false
       "difference" $config.difference
       "suppress" $config.suppress ) }}
-    
-      {{/*  if slice widths: [500,600] change to
-            widths:
-            - width: 500
-              resized: [map] */}}
-      {{ $widths_dict := slice }}
-      {{ range $sanitized_widths }}
-        {{ $widths_dict = $widths_dict | append (dict "width" .) }}
-      {{ end }}
-      {{ $widths_resized := slice }}
-      {{ range $width := $widths_dict }}
-        {{ $resized := partial "bg-images/private/gen/images" (dict "image" $image "width" $width.width) }}
-        {{ $width = merge $width (dict "resized" $resized) }}
-        {{ $widths_resized = $widths_resized | append $width }}
-      {{ end }}
-      {{ $resized := slice }}
-      {{ range $width := $sanitized_widths }}
-        {{ $img := partial "bg-images/private/gen/images" (dict "image" $image "width" $width) }}
-        {{ $resized = $resized | append $img }}
-      {{ end }}
-    {{ $image = merge $image (dict 
-      "widths" $sanitized_widths 
-      "resized" $resized
-      "widths_resized" $widths_resized) }}
-
-    {{/* add params for export below */}}
-    {{ $images = $images | append $image }}
-    {{ $selectors = $selectors | append .selector }}
-    {{ if .lazy }}
-      {{ $lazy_selectors = $lazy_selectors | append .selector }}
-    {{ else }}
-      {{ $not_lazy_selectors = $not_lazy_selectors | append .selector }}
     {{ end }}
   {{ end }}
+
 {{ end }}
 
 {{/* return variables in dict */}}

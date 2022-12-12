@@ -1,4 +1,6 @@
+{{/* to remove */}}
 {{ $cfg := site.Params.bg_images }}
+
 {{ $blur := $cfg.lqip.blur }}
 {{ $div := $cfg.lqip.div }}
 {{ $quality := $cfg.lqip.quality }}
@@ -6,7 +8,18 @@
 {{ $placeholder := $cfg.placeholder }}
 {{ $difference := $cfg.min_width_difference }}
 {{ $suppress := $cfg.suppress_width_warning }}
-{{ $root_margin := $cfg.root_margin }}
+{{ $root_margin := $cfg.root_margin }} 
+
+  {{/* 
+{{ $blur := .Param "bg-images.lqip.blur" }}
+{{ $div := .Param "bg-images.lqip.div" }}
+{{ $quality := .Param "bg-images.lqip.quality" }}
+{{ $widths := .Param "bg-images.widths" }}
+{{ $placeholder := .Param "bg-images.placeholder" }}
+{{ $difference := .Param "bg-images.min_width_difference" }}
+{{ $suppress := .Param "bg-images.suppress_width_warning" }}
+{{ $root_margin := .Param "bg-images.root_margin" }}
+*/}}
 {{ $config := dict
   "blur" $blur
   "div" $div
@@ -17,4 +30,5 @@
   "suppress" $suppress
   "root_margin" $root_margin }}
 {{ partial "bg-images/private/params/sanitize-config" $config }}
+
 {{ return $config }}
