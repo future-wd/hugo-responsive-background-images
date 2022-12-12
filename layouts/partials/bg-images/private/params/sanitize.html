@@ -1,56 +1,114 @@
-{{/*
-  bg-images/private/sanitize-inputs.html 
-  Sanitizes user inputs and returns error messages
-
-  @author @sean-au
-
-  @context (dict)
-    "ctx" (object) - page context
-    ...dict provided to partials/bg-images/head
-    )
-
-  @access private
-
-  @example - Go Template
-    {{ partial "bg-images/private/validate-variables" (merge . (dict "ctx" $ctx)) }}
-
-*/}}
+{{ $s := newScratch }}
+{{ $s.Set "params" dict }}
 {{ $error_ctx := dict 
   "page" .ctx 
   "img" (.ctx.Resources.GetMatch .src)
   "element" "bg-image"
   "module" "Hugo Responsive Background Images"}}
 
-{{ with .src }}
-  {{/* FIX THIS SECTION NOT WORKING */}}
-  {{ $img := $.ctx.Resources.GetMatch . }}
-  {{ if not $img }}
+{{/* site level config (via config.yaml) */}}
+{{ if eq .level "site" }}
+
+  {{ with .root_margin }}
+    {{ if ne (printf "%T" .) "int" }}
+      {{ partial "img-common/private/utils/options-error" (dict 
+        "var" "root_margin"
+        "val" .
+        "opts" "an integer"
+        "ctx" $error_ctx
+      ) }}
+    {{ else }}
+    {{ $s.SetInMap "params" "root_margin" . }} 
+    {{ end }}
+  {{ end }}
+   
+  {{ with .suppress_width_warning }}
+    {{ if ne (printf "%T" .) "bool" }}
+      {{ partial "img-common/private/utils/options-error" (dict 
+        "var" "suppress_width_warning"
+        "val" .
+        "opts" "true/false"
+        "ctx" $error_ctx
+      ) }}
+    {{ else }}
+    {{ $s.SetInMap "params" "suppress" . }} 
+    {{ end }}
+  {{ end }}
+
+{{ end }}
+
+{{/* page level config (via md) */}}
+{{ if eq .level "page" }}
+  {{ $s.SetInMap "params" "ctx" .ctx }}
+{{ end }}
+
+{{/* image level config (via md) */}}
+{{ if eq .level "image" }}
+
+  {{ with .src }}
+    {{/* FIX THIS SECTION NOT WORKING */}}
+    {{ $img := $.ctx.Resources.GetMatch . }}
+    {{ if $img }}
+      {{ $s.SetInMap "params" "src" . }}
+      {{ $s.SetInMap "params" "img" $img }}
+    {{ else  }}
+      {{ partial "img-common/private/utils/options-error" (dict 
+      "var" "src"
+      "val" .
+      "opts" "an image resource relative path string"
+      "ctx" $error_ctx
+      ) }}
+    {{ end }}
+  {{ else }}
+    {{ partial "img-common/private/utils/options-error" (dict "var" "src" "ctx" $error_ctx) }}
+  {{ end }}
+
+  {{ with .selector }}
+    {{ if ne (printf "%T" .) "string" }}
+      {{ partial "img-common/private/utils/options-error" (dict 
+        "var" "selector"
+        "val" .
+        "opts" "a css selector string"
+        "ctx" $error_ctx
+      ) }}
+    {{ else }}
+      {{ $s.SetInMap "params" "selector" . }}
+    {{ end }}
+  {{ else }}
     {{ partial "img-common/private/utils/options-error" (dict 
-    "var" "src"
-    "val" .
-    "opts" "an image resource relative path string"
+    "var" "selector"
     "ctx" $error_ctx
     ) }}
   {{ end }}
-{{ else }}
-  {{ partial "img-common/private/utils/options-error" (dict "var" "src" "ctx" $error_ctx) }}
-{{ end }}
 
-{{ with .selector }}
-  {{ if ne (printf "%T" .) "string" }}
-    {{ partial "img-common/private/utils/options-error" (dict 
-      "var" "selector"
+  {{ with .lazy }}
+  {{ if ne (printf "%T" .) "bool" }}
+      {{ partial "img-common/private/utils/options-error" (dict 
+      "var" "lazy"
       "val" .
-      "opts" "a css selector string"
+      "opts" "true or false"
       "ctx" $error_ctx
     ) }}
+    {{ else }}
+      {{ $s.SetInMap "params" "lazy" . }}
+    {{ end }}
   {{ end }}
-{{ else }}
-  {{ partial "img-common/private/utils/options-error" (dict 
-  "var" "selector"
-  "ctx" $error_ctx
-  ) }}
+
+  {{ with .placeholder }}
+    {{ if ne (printf "%T" .) "string"  }}
+      {{ partial "img-common/private/utils/options-error" (dict 
+      "var" "placeholder"
+      "val" .
+      "opts" "a string of either lqip, dominant or a css color code"
+      "ctx" $error_ctx) }}
+    {{ else }}
+      {{ $s.SetInMap "params" "placeholder" . }}
+    {{ end }}
+  {{ end }}
+
 {{ end }}
+
+{{/* config for all levels */}}
 
 {{ with .widths }}
   {{ if reflect.IsSlice . }}
@@ -64,6 +122,7 @@
         ) }}
       {{ end }}
     {{ end }}
+    {{ $s.SetInMap "params" "widths" (sort .) }}
   {{ else }}
     {{ partial "img-common/private/utils/options-error" (dict 
     "var" "widths"
@@ -74,26 +133,36 @@
   {{ end }}
 {{ end }}
 
-{{ with .lazy }}
-  {{ if ne . true }}
+{{ with .min_width_difference }}
+  {{ if ne (printf "%T" .) "int" }}
     {{ partial "img-common/private/utils/options-error" (dict 
-    "var" "lazy"
-    "val" .
-    "opts" "true or false"
-    "ctx" $error_ctx
-  ) }}
+      "var" "min_width_difference"
+      "val" .
+      "opts" "an integer"
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+  {{ $s.SetInMap "params" "difference" . }} 
   {{ end }}
 {{ end }}
 
-{{ with .placeholder }}
-  {{ if ne (printf "%T" .) "string"  }}
+{{ with .quality }}
+  {{ if ne (printf "%T" .) "int" }}
     {{ partial "img-common/private/utils/options-error" (dict 
-    "var" "placeholder"
-    "val" .
-    "opts" "a string of either lqip, dominant or a css color code"
-    "ctx" $error_ctx
-  ) }}
+      "var" "quality"
+      "val" .
+      "opts" "an integer"
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+  {{ $s.SetInMap "params" "quality" . }} 
   {{ end }}
 {{ end }}
 
-{{ return true }}
+{{/* these params need to be sanitized and added to scratch */}}
+{{ $params := dict
+  "blur" .lqip.blur
+  "div" .lqip.div
+  "quality" .lqip.quality
+}}
+{{ return $s.Get "params" }}

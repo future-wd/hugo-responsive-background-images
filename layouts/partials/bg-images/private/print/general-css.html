@@ -18,6 +18,7 @@
 */ -}}
 {{- /* generic background css for all selectors
     ** this can be extended on a per image basis easily */ -}}
+/* all selectors */
 {{ delimit .selectors ", " }} {
   background-position: center center;
   background-repeat: no-repeat; 
@@ -29,6 +30,7 @@
     ** this css will not have any effect as there will be no .js class present
     ** if the user has a script that generates 
     ** this is not used for lazy loading images to avoid conflict and speed up placeholder   */ -}}
+/* not_lazy_selectors - webp check pending */
 {{ range .not_lazy_selectors }}.js {{ . }}, {{ end }}{
   background-image: none;
 }

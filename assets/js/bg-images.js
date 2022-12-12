@@ -10,9 +10,8 @@
 
 {{- $list := .lazy_selectors | jsonify -}}
 const list = {{ $list }};
-{{ $rootMargin := .config.root_margin }}
 const options = {
-  rootMargin: {{ printf "'0px 0px %vpx 0px'" $rootMargin }},
+  rootMargin: {{ printf "'0px 0px %vpx 0px'" site.Params.bg_images.root_margin }},
 }
 /* eslint-enable */
 

@@ -5,9 +5,7 @@
   @author @sean-au
 
   @context
-    .image
-      .src - page resource file string
-      .ctx - page context
+    ...$params
     .width - resize width integer
 
   @returns dict:
@@ -17,33 +15,36 @@
   @access private
 
   @example - Hugo Template
-  {{- $resized := partial "bg-images/private/generate-images" (dict "image" $image "width" $width) }}
+    {{ $img := partial "bg-images/private/gen/images" (merge $params (dict "width" $width)) }}
 
 */ -}}
 
-{{/* temp variable */}}
-{{ $c := site.Params.bg_images }}
+{{ $img := .ctx.Resources.GetMatch .src }}
+{{ $fallback := false }}
+{{ if .no_jpg }}
+  {{ $fallback = $img.Resize (printf "%vx q%v" .width .quality) }}
+{{ else }}
+  {{ $fallback:= $img.Resize (printf "%vx jpeg q%v" .width .quality) }}
+{{ end }}
 
-{{ $img := .image.ctx.Resources.GetMatch .image.src }}
-{{ $original := $img.Resize (printf "%vx q%v" .width $c.quality) }}
-{{ $jpg := $img.Resize (printf "%vx jpeg q%v" .width $c.quality) }}
-{{ $webp := $img.Resize (printf "%vx webp q%v" .width $c.quality) }}
+
+{{ $webp := $img.Resize (printf "%vx webp q%v" .width .quality) }}
 {{ $lqip := false }}
 {{ $lqip_webp := false }}
 {{ $single := false }}
-{{ if eq .image.placeholder "lqip"}}
-  {{ $lqip = $img.Resize (printf "%vx jpeg q%v" (div .width 1.5 | int) .image.lqip.quality) }}
-  {{ $lqip = $lqip.Filter (images.GaussianBlur .image.lqip.blur) }}
+{{ if eq .placeholder "lqip"}}
+  {{ $lqip = $img.Resize (printf "%vx jpeg q%v" (div .width 1.5 | int) .lqip.quality) }}
+  {{ $lqip = $lqip.Filter (images.GaussianBlur .lqip.blur) }}
   {{ $lqip = $lqip.RelPermalink }}
-  {{ $lqip_webp = $img.Resize (printf "%vx webp q%v" (div .width .image.lqip.div | int) .image.lqip.quality) }}
-  {{ $lqip_webp = $lqip_webp.Filter (images.GaussianBlur .image.lqip.blur) }}
+  {{ $lqip_webp = $img.Resize (printf "%vx webp q%v" (div .width .lqip.div | int) .lqip.quality) }}
+  {{ $lqip_webp = $lqip_webp.Filter (images.GaussianBlur .lqip.blur) }}
   {{ $lqip_webp = $lqip_webp.RelPermalink }}
-{{ else if (eq .image.placeholder "dominant") }}
+{{ else if (eq .placeholder "dominant") }}
+  {{/* generate single pixel gif to speed up dominant color extraction */}}
   {{ $single = $img.Resize "1x gif" }}
 {{ end }}
 {{ return (dict 
-  "original" $original 
-  "jpg" $jpg
+  "fallback" $fallback
   "webp" $webp 
   "lqip" $lqip 
   "lqip_webp" $lqip_webp 

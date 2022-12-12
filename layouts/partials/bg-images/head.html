@@ -12,12 +12,14 @@
 
 */ -}}
 
-{{ $params := partial "bg-images/private/params/params" . }}
+{{ $params := partialCached "bg-images/private/params/params" . . }}
+
 {{/* add to page scoped scratch for use in js partial 
   ** JS partial MUST be lower than the head partial for it to work 
   */}}
 {{ .Scratch.Set "bg_params" $params }}
 
-{{ partial "bg-images/private/print/prefetch" (dict "params" $params "ctx" .) }}
+{{/* run per page */}}
+{{ partial "bg-images/private/print/prefetch" (merge $params (dict "ctx" . )) }}
 
-{{ partial "bg-images/private/gen/css-resource" $params }}
+{{ partialCached "bg-images/private/gen/css-resource" $params .  }}

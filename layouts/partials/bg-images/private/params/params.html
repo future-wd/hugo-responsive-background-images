@@ -3,45 +3,63 @@
 {{ $lazy_selectors := slice }}
 {{ $not_lazy_selectors := slice }}
 
-{{/* import sanitized site config params */}}
-{{ $config := partial "bg-images/private/params/collect" (merge site.Params.bg_images (dict "level" "site")) }}
-{{ warnf "site config: %v" $config}}
-
-{{/* check for images, and their params and merge }}
+{{ $site_params := partial "bg-images/private/params/sanitize" (merge site.Params.bg_images (dict "level" "site" "ctx" .)) }}
+{{ $params := $site_params}}
 
 {{ range where site.Pages "Params.bg_images" "!=" nil }}
-  {{ warnf "page is %v" .RelPermalink }}
   {{ $ctx := . }}
   {{ with .Params.bg_images }}
-    {{ errorf "page exists"}}
-    {{ $page_config := partial "bg-images/private/params/collect" (merge . (dict "level" "page")) }}
-    {{ warnf "page %v config: %v" $ctx.RelPermalink $page_config}}
-    {{ $config = merge $config $page_config}}
-    {{ warnf "page config merged: %v" $config}}
+    {{ $page_params := partial "bg-images/private/params/sanitize" (merge . (dict "level" "page" "ctx" $ctx)) }}
+    {{ $params = merge $params $page_params }}
 
     {{ range .images }}
-      {{ $image_config := partial "bg-images/private/params/collect" .}}
-      {{ warnf "image config: %v" $image_config}}
-      {{ $config = merge $config $image_config}}
-      {{ warnf "image config merged: %v" $config}}
+      {{ $image_params := partial "bg-images/private/params/sanitize" (merge . (dict "level" "image" "ctx" $ctx)) }}
+      {{ $params = merge $params $image_params }}
 
-    {{ $widths = sort $widths }}
-    {{ $sanitized_widths := partial "bg-images/private/utils/sanitize-widths" (dict 
-      "ctx" $ctx
-      "img" ($ctx.Resources.Get $image.src)
-      "widths" $widths
-      "fill_ratio" false
-      "difference" $config.difference
-      "suppress" $config.suppress ) }}
+      {{ $restricted_widths := partial "img-common/private/utils/restrict-widths" (dict 
+        "ctx" $ctx
+        "img" ($ctx.Resources.Get $params.src)
+        "widths" $params.widths
+        "fill_ratio" false
+        "difference" $params.difference
+        "suppress" $params.suppress ) }}
+  
+      {{ $resized := slice }}
+      {{/* widths resized may be more natural when width level params are implemented */}}
+      {{ $widths_resized := slice }}
+      {{ range $width := $restricted_widths }}
+        {{ $img := partial "bg-images/private/gen/images" (merge $params (dict "width" $width)) }}
+        {{ $resized = $resized | append $img }}
+        {{ $widths_resized = $widths_resized | append (dict "width" $width "resized" $img)}}
+      {{ end }}
+
+      {{ $params = merge $params (dict 
+        "restricted_widths" $restricted_widths
+        "resized" $resized
+        "widths_resized" $widths_resized) }}
+
+      {{/* add params for export below */}}
+      {{ $images = $images | append $params }}
+      {{ $selectors = $selectors | append $params.selector }}
+      {{ with $params.lazy }}
+        {{ $lazy_selectors = $lazy_selectors | append $params.selector }}
+      {{ else }}
+        {{ $not_lazy_selectors = $not_lazy_selectors | append $params.selector }}
+      {{ end }}
+   
     {{ end }}
-  {{ end }}
 
+  {{ end }}
 {{ end }}
 
+    
+
 {{/* return variables in dict */}}
+
+
 {{ return dict 
   "images" $images
   "selectors" $selectors
   "lazy_selectors" $lazy_selectors
   "not_lazy_selectors" $not_lazy_selectors
-  "config" $config }}
+  "params" $site_params }}

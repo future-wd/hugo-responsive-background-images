@@ -4,9 +4,11 @@ date: 2022-08-28T15:35:39-07:00
 draft: false
 type: full
 bg_images:
+  widths: [100,200,3000]
   images:
   - src: image1.png
     selector: .full
+    widths: [111,222,3333]
   - src: image2.png
     selector: .second-bg
   - src: image3.png

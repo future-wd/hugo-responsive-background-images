@@ -111,12 +111,26 @@ v0.04
 - markdown parameters are sanitized with error messages
 - placeholder option of lqip/dominant/color code
 
+v0.0.5
+
+- moved common utils to github.com/future-wd/hugo-imaging-common
+
 #### TODO
 
 v0.0.5
 
-- use common utils - move to github repo - test 
-- create options array, populate from image specific config then page params then site params
+- check context for scss from template. is it site only?
+- context for js from template, should another search be done to extract params? 
+  where site.Pages "Params.bg_images" "!=" null
+  with .bg_images
+  range .images where "lazy" "===" true
+  append .selector
+
+- should this be run for prefetch, so params are run from the scss template so the partial is only called once?
+- add image processing options
+- override lazy at a site config level??
+- sanitize.html customize error message for site/page/image level config
+- add width level config
 - use resources.Copy to rename lqip image resource for easy debug in browser
 - change .resize.original and .resize.jpg to .resize.fallback and add configuration to disable jpg conversion
 - add config santize

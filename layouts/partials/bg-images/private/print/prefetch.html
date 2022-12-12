@@ -6,7 +6,7 @@
   @author @sean-au
 
   @context dict 
-    .params - $params
+    ...$params
     .ctx - current page context
 
   @access private
@@ -19,7 +19,9 @@
 {{/* add non lazyload images of current page to slice */}}
 {{ $prefetch_images := slice }}
 {{ $prefetch_lqip := slice }}
-{{ range .params.images }}
+
+
+{{ range .images }}
   {{ if eq .ctx.RelPermalink $.ctx.RelPermalink }}
     {{ if ne .lazy true }}
       {{ $prefetch_images = $prefetch_images | append . }}

@@ -8,8 +8,7 @@
       .selector - css selector
       .lazy - true if lazy load the image
     .resized
-      .original - original image format resized to width
-      .jpg - jpg version
+      .fallback - jpg or original image format resized to width
       .webp - webp version of image resized to width
   
   @access private
@@ -47,7 +46,7 @@
     **  js & no webp support */ -}}
 {{ .image.selector }},
 .js.no-webp  {{ .image.selector -}}{{- if .image.lazy -}}.bg-loaded {{ end }} {
-  background-image: url({{ .resized.jpg.RelPermalink }});
+  background-image: url({{ .resized.fallback.RelPermalink }});
 }
 {{- /* js & webp support */ -}}
 .js.webp {{ .image.selector -}}{{- if .image.lazy -}}.bg-loaded {{ end }} {
