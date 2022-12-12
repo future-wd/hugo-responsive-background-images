@@ -8,5 +8,9 @@
   "suppress" .suppress_width_warning 
   "root_margin" .root_margin
   "lazy" .lazy }}
+
+{{ with .level }}
+{{ warnf "level is %s" .}}
+{{ end }}
 {{/* partial "bg-images/private/params/sanitize-config" . */}}
 {{ return $params }}

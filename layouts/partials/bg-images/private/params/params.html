@@ -4,7 +4,7 @@
 {{ $not_lazy_selectors := slice }}
 
 {{/* import sanitized site config params */}}
-{{ $config := partial "bg-images/private/params/collect" site.Params.bg_images }}
+{{ $config := partial "bg-images/private/params/collect" (merge site.Params.bg_images (dict "level" "site")) }}
 {{ warnf "site config: %v" $config}}
 
 {{/* check for images, and their params and merge }}
@@ -13,7 +13,7 @@
   {{ $ctx := . }}
   {{ with .Params.bg_images }}
     {{ errorf "page exists"}}
-    {{ $page_config := partial "bg-images/private/params/collect" . }}
+    {{ $page_config := partial "bg-images/private/params/collect" (merge . (dict "level" "page")) }}
     {{ warnf "page %v config: %v" $ctx.RelPermalink $page_config}}
     {{ $config = merge $config $page_config}}
     {{ warnf "page config merged: %v" $config}}
