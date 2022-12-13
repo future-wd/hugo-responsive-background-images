@@ -115,10 +115,12 @@ v0.0.5
 
 - moved common utils to github.com/future-wd/hugo-imaging-common
 - level based sanitization and error messages
+- hugo image processing options added
 - only resize to 1x1 for .Color once! not at every width
 - js params moved to js partial
 - sanitize.html customize error message for site/page/image level config
 - change .resize.original and .resize.jpg to .resize.fallback and add np_jpg configuration to disable jpg conversion
+- rename $not_lazy_selectors to $eager_selectors
 
 #### TODO
 
@@ -126,9 +128,7 @@ v0.0.5
 - test dominant
 - test sanitization at different levels
 - move image-processing.html sanitize to common (returns slice)
-- after testing, use placeholder var sanitization on responsive-images module
-- should this be run for prefetch, so params are run from the scss template so the partial is only called once?
-- add image processing options
+- after testing, move placeholder var sanitization on responsive-images module
 - override lazy at a site config level??
 - add width level config
 - use resources.Copy to rename lqip image resource for easy debug in browser. check how lqip is handled in responsive-images
