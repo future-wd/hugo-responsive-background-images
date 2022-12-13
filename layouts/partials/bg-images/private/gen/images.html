@@ -8,12 +8,7 @@
 {{ $lqip := false }}
 {{ $lqip_webp := false }}
 {{ if eq .placeholder "lqip"}}
-  {{ $lqip = .img.Resize (printf "%vx jpeg q%v" (div .width 1.5 | int) .lqip.quality) }}
-  {{ $lqip = $lqip.Filter (images.GaussianBlur .lqip.blur) }}
-  {{ $lqip = $lqip.RelPermalink }}
-  {{ $lqip_webp = .img.Resize (printf "%vx webp q%v" (div .width .lqip.div | int) .lqip.quality) }}
-  {{ $lqip_webp = $lqip_webp.Filter (images.GaussianBlur .lqip.blur) }}
-  {{ $lqip_webp = $lqip_webp.RelPermalink }}
+  {{ $lqip = partial "bg-images/private/gen/lqip" . }}
 {{ end }}
 {{ return (dict 
   "fallback" $fallback

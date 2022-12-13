@@ -1,0 +1,6 @@
+{{ $lqip = $lqip.Filter (images.GaussianBlur .lqip.blur) }}
+{{ $lqip = $lqip.RelPermalink }}
+{{ $lqip_webp = .img.Resize (printf "%vx webp q%v" (div .width .lqip.div | int) .lqip.quality) }}
+{{ $lqip_webp = $lqip_webp.Filter (images.GaussianBlur .lqip.blur) }}
+{{ $lqip_webp = $lqip_webp.RelPermalink }}
+{{ return $lqip }}
