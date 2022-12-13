@@ -21,13 +21,11 @@
 {{ $prefetch_lqip := slice }}
 
 
-{{ range .images }}
-  {{ if eq .ctx.RelPermalink $.ctx.RelPermalink }}
-    {{ if ne .lazy true }}
-      {{ $prefetch_images = $prefetch_images | append . }}
-    {{ else if (eq .placeholder "lqip") }}
-      {{ $prefetch_lqip = $prefetch_lqip | append . }}
-    {{end }}
+{{ range where .images "ctx.RelPermalink" "=="  $.ctx.RelPermalink}}
+  {{ if ne .lazy true }}
+    {{ $prefetch_images = $prefetch_images | append . }}
+  {{ else if (eq .placeholder "lqip") }}
+    {{ $prefetch_lqip = $prefetch_lqip | append . }}
   {{ end }}
 {{ end }}
 
@@ -64,6 +62,3 @@
     {{ $count = add 1 $count }}
   {{ end }}
 {{ end }}
-
-
-
