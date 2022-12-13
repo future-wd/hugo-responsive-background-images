@@ -7,7 +7,6 @@
 {{ $webp :=    partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append "webp")) }}
 {{ $lqip := false }}
 {{ $lqip_webp := false }}
-{{ $single := false }}
 {{ if eq .placeholder "lqip"}}
   {{ $lqip = .img.Resize (printf "%vx jpeg q%v" (div .width 1.5 | int) .lqip.quality) }}
   {{ $lqip = $lqip.Filter (images.GaussianBlur .lqip.blur) }}
@@ -15,13 +14,9 @@
   {{ $lqip_webp = .img.Resize (printf "%vx webp q%v" (div .width .lqip.div | int) .lqip.quality) }}
   {{ $lqip_webp = $lqip_webp.Filter (images.GaussianBlur .lqip.blur) }}
   {{ $lqip_webp = $lqip_webp.RelPermalink }}
-{{ else if (eq .placeholder "dominant") }}
-  {{/* generate single pixel gif to speed up dominant color extraction */}}
-  {{ $single = .img.Resize "1x gif" }}
 {{ end }}
 {{ return (dict 
   "fallback" $fallback
   "webp" $webp 
   "lqip" $lqip 
-  "lqip_webp" $lqip_webp 
-  "single" $single) }}
+  "lqip_webp" $lqip_webp ) }}

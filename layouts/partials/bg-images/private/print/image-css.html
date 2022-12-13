@@ -30,8 +30,8 @@
   .js {{ .image.selector}} {
     {{ if .image.placeholder }}
       {{ if eq .image.placeholder "dominant" }}
-        {{ $dominant := .resized.single.Colors }}
-        {{ $dominant = index $dominant 0 }}
+        {{ $dominant := .resized.webp.Resize "1x1 gif" }}
+        {{ $dominant = index $dominant.Colors 0 }}
         background-color: {{ $dominant }};
       {{ else if (ne .image.placeholder "lqip")}}
         background-color: {{ .image.placeholder }};
