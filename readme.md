@@ -115,30 +115,25 @@ v0.0.5
 
 - moved common utils to github.com/future-wd/hugo-imaging-common
 - level based sanitization and error messages
+- only resize to 1x1 for .Color once! not at every width
+- js params moved to js partial
+- sanitize.html customize error message for site/page/image level config
+- change .resize.original and .resize.jpg to .resize.fallback and add np_jpg configuration to disable jpg conversion
 
 #### TODO
 
 v0.0.5
-
+- test dominant
 - test sanitization at different levels
-- check context for scss from template. is it site only?
-- only resize to 1x1 for .Color once! not at every width
-- context for js from template, should another search be done to extract params? 
-  where site.Pages "Params.bg_images" "!=" null
-  with .bg_images
-  range .images where "lazy" "===" true
-  append .selector
-
+- move image-processing.html sanitize to common (returns slice)
+- after testing, use placeholder var sanitization on responsive-images module
 - should this be run for prefetch, so params are run from the scss template so the partial is only called once?
 - add image processing options
 - override lazy at a site config level??
-- sanitize.html customize error message for site/page/image level config
 - add width level config
-- use resources.Copy to rename lqip image resource for easy debug in browser
-- change .resize.original and .resize.jpg to .resize.fallback and add configuration to disable jpg conversion
-- add config santize
-- add option of disable_jpg=true
-- option for publish scss rather than compile to css and gen .RelPermalink
+- use resources.Copy to rename lqip image resource for easy debug in browser. check how lqip is handled in responsive-images
+- option for publish scss rather than compile to css and gen .RelPermalink with .Publish
+- option for publish js with .Publish
 - add placeholder: jpg_quality, webp_quality and general jpg_quality, webp_quality
 - input sanitization does not catch error if .src does not match image resource
 - add fill ratio and oversize option to each width e.g.
@@ -151,6 +146,7 @@ v0.0.5
 - prefetch lazyload images after domcontentloaded fired
 
 v0.0.6
+- fix up lqip as currently too big with blur applied
 - prefetch lazy webp placeholders
 - fix placeholder blur, currently looks great but increases lqip size x5
 

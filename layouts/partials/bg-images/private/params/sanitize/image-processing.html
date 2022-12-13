@@ -12,7 +12,7 @@
 
   @context 
     ...$params 
-    .error_ctx - variables for error display
+    $.error_ctx - variables for error display
 
   @returns
     Slice of options
@@ -20,13 +20,13 @@
   @access private
 
   @example - Go Template
-  {{ $error_ctx := dict 
+  {{ $$error_ctx := dict 
     "page" .ctx 
     "img" (.ctx.Resources.GetMatch .src)
     "element" "bg-image"
     "level" .level
     "module" "Hugo Responsive Background Images"}}
-  {{ $general_params := partial "bg-images/private/params/sanitize/image-general" (merge . (dict "error_ctx" $error_ctx)) }}
+  {{ $general_params := partial "bg-images/private/params/sanitize/image-general" (merge . (dict $"error_ctx" $$error_ctx)) }}
   */}}
 {{ $s := newScratch }}
 {{ $s.Set "options" slice }}
@@ -37,7 +37,7 @@
       "var" "quality"
       "val" .
       "opts" "integers between 1-100 inclusive"
-      "ctx" .error_ctx
+      "ctx" $.error_ctx
     ) }}
   {{ else }}
     {{ $s.Add "options" . }}
@@ -50,7 +50,7 @@
       "var" "rotate"
       "val" .
       "opts" "integers between 1-360 inclusive"
-      "ctx" .error_ctx
+      "ctx" $.error_ctx
     ) }}
   {{ else }}
     {{ $s.Add "options" . }}
@@ -64,7 +64,7 @@
       "var" "resample_filter"
       "val" .
       "opts" (delimit $filter_opts ", ")
-      "ctx" .error_ctx
+      "ctx" $.error_ctx
     ) }}
   {{ else }}
     {{ $s.Add "options" . }}
@@ -78,7 +78,7 @@
       "var" "hint"
       "val" .
       "opts" (delimit $hint_opts ", ")
-      "ctx" .error_ctx
+      "ctx" $.error_ctx
     ) }}
   {{ else }}
     {{ $s.Add "options" . }}
@@ -92,7 +92,7 @@
       "var" "anchor"
       "val" .
       "opts" (delimit $anchor_opts ", ")
-      "ctx" .error_ctx
+      "ctx" $.error_ctx
     ) }}
   {{ else }}
     {{ $s.Add "options" . }}
@@ -106,7 +106,7 @@
       "var" "background_color"
       "val" .
       "opts" "3 or 6 digit hex color code"
-      "ctx" .error_ctx
+      "ctx" $.error_ctx
     ) }}
   {{ else }}
     {{ $s.Add "options" . }}
