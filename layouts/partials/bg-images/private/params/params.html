@@ -44,27 +44,19 @@
       {{ if ne $params.lazy true }}
         {{ $eager_selectors = $eager_selectors | append $params.selector }}
       {{ end }}
-   
     {{ end }}
-
   {{ end }}
 {{ end }}
 
-    
-
 {{/* return variables in dict */}}
-
-
 {{ return dict 
   "images" $images
   "selectors" $selectors
-  "eager_selectors" $eager_selectors
-  "params" $site_params }}
-
+  "eager_selectors" $eager_selectors }}
 
 {{/* 
   ** print/prefetch uses .images 
   ** print/media-queries uses .images
   ** print/general-css uses .selectors .eager_selectors
-  
+  ** removed $params from return dict
   */}}

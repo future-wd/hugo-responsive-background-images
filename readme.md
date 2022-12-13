@@ -94,13 +94,35 @@ bg-images:
   images:
   - src: image1.png # page resource relative to the page's markdown file
     selector: .section--hero # css selector to which the background will be applied
-    widths: [500, 900, 1200] # optional override
     lazy: true # optional see lazy load section for requirements (still experimental)
     placeholder: lqip/dominant/css color code # optional
     lqip: # optional override 
       div: 4
       blur: 5
+    widths: [500, 900, 1200] # optional override
 ```
+
+### On page config, per width (in development)
+
+```yaml
+bg-images:
+  widths: [...]
+  root_margin:
+  ... 
+  images:
+  - src: image1.png
+    selector: .section--hero
+    widths:
+    - width: 500
+      fit_ratio: [9, 16] # vertical mobile ratio
+    - width: 900
+    - width: 1200
+```
+
+Available params:
+
+- all image processing options
+- fit_ratio
 
 ### Change log
 
@@ -121,10 +143,13 @@ v0.0.5
 - sanitize.html customize error message for site/page/image level config
 - change .resize.original and .resize.jpg to .resize.fallback and add np_jpg configuration to disable jpg conversion
 - rename $not_lazy_selectors to $eager_selectors
+- move lqip generation to partial (Still experimental due to large blur image files)
 
 #### TODO
 
 v0.0.5
+- remove resized and widths_restricted from params output.. keep widths_resized or rename it.
+- remove .Crop from image-processing as it does not work with responsive images. oversight
 - test dominant
 - test sanitization at different levels
 - move image-processing.html sanitize to common (returns slice)
