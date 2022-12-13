@@ -1,6 +1,5 @@
 {{ $images := slice }}
 {{ $selectors := slice }}
-{{ $lazy_selectors := slice }}
 {{ $not_lazy_selectors := slice }}
 
 {{ $site_params := partial "bg-images/private/params/sanitize/index" (merge site.Params.bg_images (dict "level" "site")) }}
@@ -42,9 +41,7 @@
       {{/* add params for export below */}}
       {{ $images = $images | append $params }}
       {{ $selectors = $selectors | append $params.selector }}
-      {{ with $params.lazy }}
-        {{ $lazy_selectors = $lazy_selectors | append $params.selector }}
-      {{ else }}
+      {{ if ne $params.lazy true }}
         {{ $not_lazy_selectors = $not_lazy_selectors | append $params.selector }}
       {{ end }}
    
@@ -61,6 +58,5 @@
 {{ return dict 
   "images" $images
   "selectors" $selectors
-  "lazy_selectors" $lazy_selectors
   "not_lazy_selectors" $not_lazy_selectors
   "params" $site_params }}

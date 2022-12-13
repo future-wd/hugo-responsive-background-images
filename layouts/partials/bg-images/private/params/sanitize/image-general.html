@@ -28,19 +28,6 @@
 
 {{/* site level config (via config.yaml) */}}
 {{ if eq .level "site" }}
-
-  {{ with .root_margin }}
-    {{ if ne (printf "%T" .) "int" }}
-      {{ partial "img-common/private/utils/level-options-error" (dict 
-        "var" "root_margin"
-        "val" .
-        "opts" "an integer"
-        "ctx" .error_ctx
-      ) }}
-    {{ else }}
-    {{ $s.SetInMap "params" "root_margin" . }} 
-    {{ end }}
-  {{ end }}
    
   {{ with .suppress_width_warning }}
     {{ if ne (printf "%T" .) "bool" }}

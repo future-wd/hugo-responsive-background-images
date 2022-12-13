@@ -1,0 +1,14 @@
+{{ $s := newScratch }}
+
+{{/* get lazy loading selectors */}}
+{{ $s.Set "lazy_selectors" slice }}
+{{ range where site.Pages "Params.bg_images" "!=" nil }}
+  {{ with .Params.bg_images }}
+    {{ range where .images "lazy" true }}
+      {{ $s.Add "lazy_selectors" .selector }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $params := dict "lazy_selectors" ($s.Get "lazy_selectors" | jsonify)}}
+{{ return $params }};

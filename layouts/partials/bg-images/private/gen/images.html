@@ -3,10 +3,8 @@
 {{ if .no_jpg }}
   {{ $format = "" }}
 {{ end }}
-
-{{ $fallback = partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append "jpeg") )}}
-
-{{ $webp := .img.Resize (printf "%vx webp %v" .width .options) }}
+{{ $fallback = partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append $format)) }}
+{{ $webp :=    partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append "webp")) }}
 {{ $lqip := false }}
 {{ $lqip_webp := false }}
 {{ $single := false }}

@@ -1,14 +1,17 @@
 /* stylelint-disable */
-{{- /*    
+{{- /*
+  assets/scss/bg-images.js
+    Generates a SCSS file, from a SCSS hugo template
 
+  @author @sean-au
 
+  @context - site context
 
+  @access private
 
+  @example - Use with resources.ExecuteAsTemplate
 
 */ -}}
-
-
-
 {{ partial "bg-images/private/print/media-queries" .images }}
 {{ partial "bg-images/private/print/general-css" (dict "selectors" .selectors "not_lazy_selectors" .not_lazy_selectors) }}
 
