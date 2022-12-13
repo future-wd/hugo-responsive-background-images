@@ -114,12 +114,15 @@ v0.04
 v0.0.5
 
 - moved common utils to github.com/future-wd/hugo-imaging-common
+- level based sanitization and error messages
 
 #### TODO
 
 v0.0.5
 
+- test sanitization at different levels
 - check context for scss from template. is it site only?
+- only resize to 1x1 for .Color once! not at every width
 - context for js from template, should another search be done to extract params? 
   where site.Pages "Params.bg_images" "!=" null
   with .bg_images

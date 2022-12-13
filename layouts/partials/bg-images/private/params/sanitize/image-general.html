@@ -1,21 +1,41 @@
+{{/*
+  bg-images/private/sanitize/image-general.html 
+  Sanitizes general image processing params
+
+  @author @sean-au
+
+  @context 
+    ...$params 
+    .error_ctx - variables for error display
+
+  @returns
+    Dict of params
+
+  @access private
+
+  @example - Go Template
+  {{ $error_ctx := dict 
+    "page" .ctx 
+    "img" (.ctx.Resources.GetMatch .src)
+    "element" "bg-image"
+    "level" .level
+    "module" "Hugo Responsive Background Images"}}
+  {{ $general_params := partial "bg-images/private/params/sanitize/image-general" (merge . (dict "error_ctx" $error_ctx)) }}
+  */}}
+
 {{ $s := newScratch }}
 {{ $s.Set "params" dict }}
-{{ $error_ctx := dict 
-  "page" .ctx 
-  "img" (.ctx.Resources.GetMatch .src)
-  "element" "bg-image"
-  "module" "Hugo Responsive Background Images"}}
 
 {{/* site level config (via config.yaml) */}}
 {{ if eq .level "site" }}
 
   {{ with .root_margin }}
     {{ if ne (printf "%T" .) "int" }}
-      {{ partial "img-common/private/utils/options-error" (dict 
+      {{ partial "img-common/private/utils/level-options-error" (dict 
         "var" "root_margin"
         "val" .
         "opts" "an integer"
-        "ctx" $error_ctx
+        "ctx" .error_ctx
       ) }}
     {{ else }}
     {{ $s.SetInMap "params" "root_margin" . }} 
@@ -24,11 +44,11 @@
    
   {{ with .suppress_width_warning }}
     {{ if ne (printf "%T" .) "bool" }}
-      {{ partial "img-common/private/utils/options-error" (dict 
+      {{ partial "img-common/private/utils/level-options-error" (dict 
         "var" "suppress_width_warning"
         "val" .
         "opts" "true/false"
-        "ctx" $error_ctx
+        "ctx" .error_ctx
       ) }}
     {{ else }}
     {{ $s.SetInMap "params" "suppress" . }} 
@@ -52,42 +72,42 @@
       {{ $s.SetInMap "params" "src" . }}
       {{ $s.SetInMap "params" "img" $img }}
     {{ else  }}
-      {{ partial "img-common/private/utils/options-error" (dict 
+      {{ partial "img-common/private/utils/level-options-error" (dict 
       "var" "src"
       "val" .
       "opts" "an image resource relative path string"
-      "ctx" $error_ctx
+      "ctx" .error_ctx
       ) }}
     {{ end }}
   {{ else }}
-    {{ partial "img-common/private/utils/options-error" (dict "var" "src" "ctx" $error_ctx) }}
+    {{ partial "img-common/private/utils/level-options-error" (dict "var" "src" "ctx" .error_ctx) }}
   {{ end }}
 
   {{ with .selector }}
     {{ if ne (printf "%T" .) "string" }}
-      {{ partial "img-common/private/utils/options-error" (dict 
+      {{ partial "img-common/private/utils/level-options-error" (dict 
         "var" "selector"
         "val" .
         "opts" "a css selector string"
-        "ctx" $error_ctx
+        "ctx" .error_ctx
       ) }}
     {{ else }}
       {{ $s.SetInMap "params" "selector" . }}
     {{ end }}
   {{ else }}
-    {{ partial "img-common/private/utils/options-error" (dict 
+    {{ partial "img-common/private/utils/level-options-error" (dict 
     "var" "selector"
-    "ctx" $error_ctx
+    "ctx" .error_ctx
     ) }}
   {{ end }}
 
   {{ with .lazy }}
   {{ if ne (printf "%T" .) "bool" }}
-      {{ partial "img-common/private/utils/options-error" (dict 
+      {{ partial "img-common/private/utils/level-options-error" (dict 
       "var" "lazy"
       "val" .
       "opts" "true or false"
-      "ctx" $error_ctx
+      "ctx" .error_ctx
     ) }}
     {{ else }}
       {{ $s.SetInMap "params" "lazy" . }}
@@ -96,11 +116,11 @@
 
   {{ with .placeholder }}
     {{ if ne (printf "%T" .) "string"  }}
-      {{ partial "img-common/private/utils/options-error" (dict 
+      {{ partial "img-common/private/utils/level-options-error" (dict 
       "var" "placeholder"
       "val" .
       "opts" "a string of either lqip, dominant or a css color code"
-      "ctx" $error_ctx) }}
+      "ctx" .error_ctx) }}
     {{ else }}
       {{ $s.SetInMap "params" "placeholder" . }}
     {{ end }}
@@ -114,48 +134,48 @@
   {{ if reflect.IsSlice . }}
     {{ range . }}
       {{ if ne (printf "%T" .) "int" }}
-        {{ partial "img-common/private/utils/options-error" (dict 
+        {{ partial "img-common/private/utils/level-options-error" (dict 
           "var" "widths slice item"
           "val" .
           "opts" "an integer in a slice"
-          "ctx" $error_ctx
+          "ctx" .error_ctx
         ) }}
       {{ end }}
     {{ end }}
     {{ $s.SetInMap "params" "widths" (sort .) }}
   {{ else }}
-    {{ partial "img-common/private/utils/options-error" (dict 
+    {{ partial "img-common/private/utils/level-options-error" (dict 
     "var" "widths"
     "val" .
     "opts" "a slice of integers"
-    "ctx" $error_ctx
+    "ctx" .error_ctx
   ) }}
   {{ end }}
 {{ end }}
 
 {{ with .min_width_difference }}
   {{ if ne (printf "%T" .) "int" }}
-    {{ partial "img-common/private/utils/options-error" (dict 
+    {{ partial "img-common/private/utils/level-options-error" (dict 
       "var" "min_width_difference"
       "val" .
       "opts" "an integer"
-      "ctx" $error_ctx
+      "ctx" .error_ctx
     ) }}
   {{ else }}
   {{ $s.SetInMap "params" "difference" . }} 
   {{ end }}
 {{ end }}
 
-{{ with .quality }}
-  {{ if ne (printf "%T" .) "int" }}
-    {{ partial "img-common/private/utils/options-error" (dict 
-      "var" "quality"
+{{ with .no_jpg }}
+  {{ if ne (printf "%T" .) "bool" }}
+    {{ partial "img-common/private/utils/level-options-error" (dict 
+      "var" "no_jpg"
       "val" .
-      "opts" "an integer"
-      "ctx" $error_ctx
+      "opts" "true/false"
+      "ctx" .error_ctx
     ) }}
   {{ else }}
-  {{ $s.SetInMap "params" "quality" . }} 
+  {{ $s.SetInMap "params" "no_jpg" . }} 
   {{ end }}
 {{ end }}
 

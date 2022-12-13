@@ -3,17 +3,18 @@
 {{ $lazy_selectors := slice }}
 {{ $not_lazy_selectors := slice }}
 
-{{ $site_params := partial "bg-images/private/params/sanitize" (merge site.Params.bg_images (dict "level" "site" "ctx" .)) }}
+{{ $site_params := partial "bg-images/private/params/sanitize/index" (merge site.Params.bg_images (dict "level" "site")) }}
 {{ $params := $site_params}}
 
+{{/* range over pages with bg_images */}}
 {{ range where site.Pages "Params.bg_images" "!=" nil }}
   {{ $ctx := . }}
   {{ with .Params.bg_images }}
-    {{ $page_params := partial "bg-images/private/params/sanitize" (merge . (dict "level" "page" "ctx" $ctx)) }}
+    {{ $page_params := partial "bg-images/private/params/sanitize/index" (merge . (dict "level" "page" "ctx" $ctx)) }}
     {{ $params = merge $params $page_params }}
 
     {{ range .images }}
-      {{ $image_params := partial "bg-images/private/params/sanitize" (merge . (dict "level" "image" "ctx" $ctx)) }}
+      {{ $image_params := partial "bg-images/private/params/sanitize/index" (merge . (dict "level" "image" "ctx" $ctx)) }}
       {{ $params = merge $params $image_params }}
 
       {{ $restricted_widths := partial "img-common/private/utils/restrict-widths" (dict 

@@ -1,47 +1,25 @@
-{{- /*
-  bg-images/private/gen/images.html
-  Generates original and webp format images based on image and width input.
-
-  @author @sean-au
-
-  @context
-    ...$params
-    .width - resize width integer
-
-  @returns dict:
-    .original - original format image
-    .webp - webp format image
-
-  @access private
-
-  @example - Hugo Template
-    {{ $img := partial "bg-images/private/gen/images" (merge $params (dict "width" $width)) }}
-
-*/ -}}
-
-{{ $img := .ctx.Resources.GetMatch .src }}
 {{ $fallback := false }}
+{{ $format := "jpeg" }}
 {{ if .no_jpg }}
-  {{ $fallback = $img.Resize (printf "%vx q%v" .width .quality) }}
-{{ else }}
-  {{ $fallback:= $img.Resize (printf "%vx jpeg q%v" .width .quality) }}
+  {{ $format = "" }}
 {{ end }}
 
+{{ $fallback = partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append "jpeg") )}}
 
-{{ $webp := $img.Resize (printf "%vx webp q%v" .width .quality) }}
+{{ $webp := .img.Resize (printf "%vx webp %v" .width .options) }}
 {{ $lqip := false }}
 {{ $lqip_webp := false }}
 {{ $single := false }}
 {{ if eq .placeholder "lqip"}}
-  {{ $lqip = $img.Resize (printf "%vx jpeg q%v" (div .width 1.5 | int) .lqip.quality) }}
+  {{ $lqip = .img.Resize (printf "%vx jpeg q%v" (div .width 1.5 | int) .lqip.quality) }}
   {{ $lqip = $lqip.Filter (images.GaussianBlur .lqip.blur) }}
   {{ $lqip = $lqip.RelPermalink }}
-  {{ $lqip_webp = $img.Resize (printf "%vx webp q%v" (div .width .lqip.div | int) .lqip.quality) }}
+  {{ $lqip_webp = .img.Resize (printf "%vx webp q%v" (div .width .lqip.div | int) .lqip.quality) }}
   {{ $lqip_webp = $lqip_webp.Filter (images.GaussianBlur .lqip.blur) }}
   {{ $lqip_webp = $lqip_webp.RelPermalink }}
 {{ else if (eq .placeholder "dominant") }}
   {{/* generate single pixel gif to speed up dominant color extraction */}}
-  {{ $single = $img.Resize "1x gif" }}
+  {{ $single = .img.Resize "1x gif" }}
 {{ end }}
 {{ return (dict 
   "fallback" $fallback
