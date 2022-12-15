@@ -26,7 +26,7 @@
   @media only screen and (max-width: {{ .width }}px) {
     {{ partial "bg-images/private/print/image-css" (dict "resized" .resized "image" $image) }}
   }
-  {{- else if (ne (add $count 1) (len $image.restricted_widths)) }}
+  {{- else if (ne (add $count 1) (len $image.widths_resized)) }}
   @media only screen and (min-width: {{ add 0.1 $prev_width }}px) and (max-width: {{ .width }}px) {
     {{ partial "bg-images/private/print/image-css" (dict "resized" .resized "image" $image) }}
   }
