@@ -33,8 +33,7 @@
         {{ $widths_resized = $widths_resized | append (dict "width" $width "resized" $img)}}
       {{ end }}
 
-      {{ $params = merge $params (dict 
-        "restricted_widths" $restricted_widths
+      {{ $params = merge $params (dict
         "resized" $resized
         "widths_resized" $widths_resized) }}
 
