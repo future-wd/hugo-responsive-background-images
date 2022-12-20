@@ -110,13 +110,13 @@
   {{/* config for all levels except width*/}}
   {{ with .widths }}
     {{ if reflect.IsSlice . }}
+      {{ $widths := slice }}
       {{ range . }}
-        {{ $widths := slice }}
         {{ if eq (printf "%T" .) "int" }}
           {{ $width := merge $.processing_params (dict "width" . ) }}
           {{ $widths = $widths | append $width }}
         {{ else if (reflect.IsMap .) }}
-          {{ $width = partial "bg-images/private/params/image-processing" (merge . (dict "level" "width")) }}
+          {{ $width := partial "bg-images/private/params/sanitize/image-processing" (merge . (dict "level" "width")) }}
           {{ $widths = $widths | append (merge $.processing_params $width) }}
         {{ else }}
           {{ partial "img-common/private/utils/level-options-error" (dict 
@@ -125,8 +125,8 @@
             "opts" "an integer or dict see readme"
             "ctx" $error_ctx) }}
         {{ end }}
-        {{ $s.SetInMap "params" "widths" $widths }}
       {{ end }}
+      {{ $s.SetInMap "params" "widths" $widths }}
     {{ else }}
       {{ partial "img-common/private/utils/level-options-error" (dict 
       "var" "widths"
