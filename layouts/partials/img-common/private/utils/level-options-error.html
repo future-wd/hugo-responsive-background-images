@@ -40,8 +40,6 @@
 
 */}}
 
-{{ warnf "error ctx: %v" . }}
-
 {{ $page := "" }}
 {{ if ne .level "site" }}
   {{ $page := printf "on page %v " .ctx.ctx.RelPermalink }}
