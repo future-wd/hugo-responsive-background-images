@@ -119,6 +119,35 @@ bg-images:
     - width: 1200
 ```
 
+| Name                   | Site | Page | Image | Width | Description                        | Default |
+| ---------------------- | ---- | ---- | ----- | ----  | ---------------------------------- | ------- |
+| src                    | NO   | NO   | YES   | NO    | Image path                      | (required) |
+| selector               | NO   | NO   | YES   | NO    | CSS selector for bg-image       | (required) |
+| root_margin            | YES  | NO   | NO    | NO    | Pixels below page to load bg-img   | `25`    |
+| suppress_width_warning | YES  | NO   | NO    | NO    | Suppress warning for narrow images | `false` |
+| min_width_difference   | YES  | YES  | YES   | NO    | If widths are too large for image,minimum width between a defined width and the image width for the image width to be used as resize width | `30`  |
+| lazy                   | YES  | YES  | YES   | NO    | Enable lazy loading               | `false`  |
+| placeholder            | YES  | YES  | YES   | NO    | Placeholder type                  | `false`  |
+
+to add:
+  "blur" .lqip.blur
+  "div" .lqip.div
+  "quality" .lqip.quality
+
+### Image processing params
+
+| Name             | Site | Page | Image | Width | Description                            | Default |
+| ---------------- | ---- | ---- | ----- | ----  | -------------------------------------- | ------- |
+| fill_ratio (dev) | YES  | YES  | YES   | YES   | Ratio for fill resize (slice W,H)      | `null`  |
+| quality          | YES  | YES  | YES   | YES   | Image resize quality (int)             | `75` *  |
+| rotate           | YES  | YES  | YES   | YES   | Counter clockwise rotation (int)       | `null`  |
+| resample_filter  | YES  | YES  | YES   | YES   | Filter for resize (string)             | `null`  |
+| hint             | YES  | YES  | YES   | YES   | Hint for webp conversion (string)      | `null`  |
+| anchor           | YES  | YES  | YES   | YES   | Smart crop anchor point (string)       | `null`  |
+| background_color | YES  | YES  | YES   | YES   | BG color if transparency not supported | `null`  |
+
+* `quality` default of 75 will override your hugo image processing defaults, but is necessary to keep files sizes down.
+
 Available params:
 
 - all image processing options
@@ -148,8 +177,14 @@ v0.0.5
 #### TODO
 
 v0.0.5
-- remove resized and widths_restricted from params output.. keep widths_resized or rename it.
-- remove .Crop from image-processing as it does not work with responsive images. oversight
+  - update readme to reflect new widths structure and check other params
+- work on restrict-widths, currently accepts a slice of widths
+  - option 1 - accept only 1 width, would be hard to generate only 1 error with this method as many     widths can be removed/changed
+  - option 2 - accept the new map(width: 500 ...params) format, and modify the widths returning a new map. (new partial)
+  - option 3 - add a conditional the partial for reflect.IsMap to reduce partials and increase maintainability <- try this first
+- should there be a disable_lazy site param to override?
+- add .fill_ratio to params and pass to image processing
+- remove .Crop from image-processing as it does not work with responsive images. oversight. change ratio to fit_ratio and update responsive-images
 - test dominant
 - test sanitization at different levels
 - move image-processing.html sanitize to common (returns slice)

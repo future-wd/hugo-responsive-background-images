@@ -3,35 +3,40 @@
 {{ $eager_selectors := slice }}
 
 {{ $error_ctx := dict 
-  "page" .ctx 
-  "img" (.ctx.Resources.GetMatch .src)
   "element" "bg-image"
-  "level" .level
   "module" "Hugo Responsive Background Images"}}
 
-{{ $processing_params := partial "bg-images/private/params/sanitize/image_processing" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx)) }}
+{{ $processing_params := partial "bg-images/private/params/sanitize/image-processing" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx)) }}
 {{ $params := partial "bg-images/private/params/sanitize/image-general" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
 
 {{/* range over pages with bg_images */}}
 {{ range where site.Pages "Params.bg_images" "!=" nil }}
   {{ $ctx := . }}
   {{ with .Params.bg_images }}
-    {{ $page_processing_params := partial "bg-images/private/params/sanitize/image_processing" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx)) }}
+    {{ $error_ctx = merge $error_ctx (dict "page" $ctx) }}
+    {{ $page_processing_params := partial "bg-images/private/params/sanitize/image-processing" 
+      (merge . (dict "level" "page" "error_ctx" $error_ctx)) }}
     {{ $processing_params = merge $processing_params $page_processing_params }}
-    {{ $page_params := partial "bg-images/private/params/sanitize/image-general" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
+    {{ $page_params := partial "bg-images/private/params/sanitize/image-general" 
+      (merge . (dict "level" "page" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
     {{ $params = merge $params $page_params }}
 
     {{ range .images }}
-      {{ $image_processing_params := partial "bg-images/private/params/sanitize/image_processing" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx)) }}
+      {{ $error_ctx = merge $error_ctx (dict 
+        "img" ($ctx.Resources.GetMatch .src)) }}
+      {{ $image_processing_params := partial "bg-images/private/params/sanitize/image-processing" 
+        (merge . (dict "level" "image" "error_ctx" $error_ctx)) }}
       {{ $processing_params = merge $processing_params $image_processing_params }}
-      {{ $image_params := partial "bg-images/private/params/sanitize/image-general" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
+      {{ $image_params := partial "bg-images/private/params/sanitize/image-general" 
+        (merge . (dict "level" "image" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
       {{ $params = merge $params $image_params }}
+      {{ warnf "img %v" $params.img}}
 
       {{ $restricted_widths := partial "img-common/private/utils/restrict-widths" (dict 
         "ctx" $ctx
-        "img" ($ctx.Resources.Get $params.src)
+        "img" $params.img
         "widths" $params.widths
-        "fill_ratio" false
+        "fill_ratio" $params.fill_ratio
         "difference" $params.difference
         "suppress" site.Params.suppress_width_warning ) }}
   
