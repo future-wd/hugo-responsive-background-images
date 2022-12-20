@@ -173,17 +173,15 @@ v0.0.5
 - change .resize.original and .resize.jpg to .resize.fallback and add np_jpg configuration to disable jpg conversion
 - rename $not_lazy_selectors to $eager_selectors
 - move lqip generation to partial (Still experimental due to large blur image files)
+- restrict-widths (local file for now) accepts slice of widths, or slice of maps which includes widths
 
 #### TODO
 
 v0.0.5
   - update readme to reflect new widths structure and check other params
-- work on restrict-widths, currently accepts a slice of widths
-  - option 1 - accept only 1 width, would be hard to generate only 1 error with this method as many     widths can be removed/changed
-  - option 2 - accept the new map(width: 500 ...params) format, and modify the widths returning a new map. (new partial)
-  - option 3 - add a conditional the partial for reflect.IsMap to reduce partials and increase maintainability <- try this first
 - should there be a disable_lazy site param to override?
-- add .fill_ratio to params and pass to image processing
+- add .fill_ratio to params and pass to image processing - TEST
+- placeholder generation - check code currently not set up properly
 - remove .Crop from image-processing as it does not work with responsive images. oversight. change ratio to fit_ratio and update responsive-images
 - test dominant
 - test sanitization at different levels

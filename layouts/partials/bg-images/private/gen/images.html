@@ -4,13 +4,14 @@
 {{ end }}
 {{ $fallback := partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append $format)) }}
 {{ $webp :=    partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append "webp")) }}
-{{ $lqip := false }}
+{{ $lqip_fallback := false }}
 {{ $lqip_webp := false }}
 {{ if eq .placeholder "lqip"}}
-  {{ $lqip = partial "bg-images/private/gen/lqip" . }}
+  {{ $lqip_fallback = partial "bg-images/private/gen/lqip" (merge . (dict "format" $format)) }}
+  {{ $lqip_webp = partial "bg-images/private/gen/lqip" (merge . (dict "format" "webp")) }}
 {{ end }}
 {{ return (dict 
   "fallback" $fallback
   "webp" $webp 
-  "lqip" $lqip 
+  "lqip_fallback" $lqip_fallback
   "lqip_webp" $lqip_webp ) }}

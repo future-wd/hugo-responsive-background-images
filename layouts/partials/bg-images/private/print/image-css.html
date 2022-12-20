@@ -24,7 +24,7 @@
     background-image: url({{ .resized.lqip_webp }});
   }
   .js.no-webp {{ .image.selector }}{
-    background-image: url({{ .resized.lqip }});
+    background-image: url({{ .resized.lqip_fallback }});
   }
   {{ else }}
   .js {{ .image.selector}} {
