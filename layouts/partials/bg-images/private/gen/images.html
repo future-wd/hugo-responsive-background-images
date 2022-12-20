@@ -3,7 +3,7 @@
   {{ $format = "" }}
 {{ end }}
 {{ $fallback := partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "fill_ratio" .fill_ratio "options" (.options | append $format)) }}
-{{ $webp :=    partial "img-common/private/utils/image-resize"  (dict "img" .img "width" .width "fill_ratio" .fill_ratio "options" (.options | append "webp")) }}
+{{ $webp :=     partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "fill_ratio" .fill_ratio "options" (.options | append "webp")) }}
 {{ $lqip_fallback := false }}
 {{ $lqip_webp := false }}
 {{ if eq .placeholder "lqip"}}
