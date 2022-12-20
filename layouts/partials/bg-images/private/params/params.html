@@ -28,9 +28,8 @@
         (merge . (dict "level" "image" "error_ctx" $error_ctx)) }}
       {{ $processing_params = merge $processing_params $image_processing_params }}
       {{ $image_params := partial "bg-images/private/params/sanitize/image-general" 
-        (merge . (dict "level" "image" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
+        (merge . (dict "level" "image" "ctx" $ctx "error_ctx" $error_ctx "processing_params" $processing_params)) }}
       {{ $params = merge $params $image_params }}
-      {{ warnf "img %v" $params.img}}
 
       {{ $restricted_widths := partial "img-common/private/utils/restrict-widths" (dict 
         "ctx" $ctx
