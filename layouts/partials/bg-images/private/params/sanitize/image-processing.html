@@ -54,7 +54,8 @@
       "ctx" $error_ctx
     ) }}
   {{ else }}
-    {{ $s.SetInMap "params" "fill_ratio" . }}
+    {{ $fill_ratio := div (index . 1 | float) (index . 0 | float) }}
+    {{ $s.SetInMap "params" "fill_ratio" $fill_ratio }}
   {{ end }}
 {{ end }}
 
