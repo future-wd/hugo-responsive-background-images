@@ -181,7 +181,7 @@ v0.0.5
   - update readme to reflect new widths structure and check other params
 - should there be a disable_lazy site param to override?
 - add .fill_ratio to params and pass to image processing - TEST
-- placeholder generation - check code currently not set up properly
+- placeholder generation - check current setup (no blur config, no size config, no crop compensation yet)
 - remove .Crop from image-processing as it does not work with responsive images. oversight. change ratio to fit_ratio and update responsive-images
 - test dominant
 - test sanitization at different levels
