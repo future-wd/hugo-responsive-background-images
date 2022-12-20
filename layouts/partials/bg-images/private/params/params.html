@@ -8,7 +8,6 @@
 
 {{ $processing_params := partial "bg-images/private/params/sanitize/image-processing" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx)) }}
 {{ $params := partial "bg-images/private/params/sanitize/image-general" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
-
 {{/* range over pages with bg_images */}}
 {{ range where site.Pages "Params.bg_images" "!=" nil }}
   {{ $ctx := . }}
@@ -20,7 +19,6 @@
     {{ $page_params := partial "bg-images/private/params/sanitize/image-general" 
       (merge . (dict "level" "page" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
     {{ $params = merge $params $page_params }}
-
     {{ range .images }}
       {{ $error_ctx = merge $error_ctx (dict 
         "img" ($ctx.Resources.GetMatch .src)) }}
@@ -30,7 +28,6 @@
       {{ $image_params := partial "bg-images/private/params/sanitize/image-general" 
         (merge . (dict "level" "image" "ctx" $ctx "error_ctx" $error_ctx "processing_params" $processing_params)) }}
       {{ $params = merge $params $image_params }}
-
       {{ $restricted_widths := partial "img-common/private/utils/restrict-widths" (dict 
         "ctx" $ctx
         "img" $params.img
