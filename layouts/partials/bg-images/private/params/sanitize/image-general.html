@@ -27,20 +27,6 @@
 
 {{ $error_ctx := merge .error_ctx (dict "level" .level) }}
 
-{{/* width level only /*}}
-{{/* .width can only be set if its in a dict in a widths slice - see below */}}
-{{ if and .width (eq .level "width") }}
-  {{ if ne (printf "%T" .width) "int" }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
-    "var" "width"
-    "val" .width
-    "opts" "an integer"
-    "ctx" $error_ctx) }}
-  {{ else}}
-    {{ $s.SetInMap "params" "width" .width }}
-  {{ end }}
-{{ end }}
-
 {{/* all of these params cant be set at width level */}}
 {{ if ne .level "width" }}
 
@@ -78,6 +64,12 @@
 
   {{/* image level only config (via md) */}}
   {{ if eq .level "image" }}
+
+    {{ with .ctx }}
+      {{ $s.SetInMap "params" "ctx" . }}
+    {{ else }}
+      {{ errorf "dev error: ctx not passed to image-general.html" }}
+    {{ end }}
 
     {{ with .src }}
       {{/* FIX THIS SECTION NOT WORKING */}}
@@ -121,11 +113,10 @@
       {{ range . }}
         {{ $widths := slice }}
         {{ if eq (printf "%T" .) "int" }}
-          {{/* merge in image prcessing params here... need to call partial first */}}
           {{ $width := merge $.processing_params (dict "width" . ) }}
           {{ $widths = $widths | append $width }}
         {{ else if (reflect.IsMap .) }}
-          {{ $width = partial "bg-images/private/params/image-general" (merge . (dict "level" "width")) }}
+          {{ $width = partial "bg-images/private/params/image-processing" (merge . (dict "level" "width")) }}
           {{ $widths = $widths | append (merge $.processing_params $width) }}
         {{ else }}
           {{ partial "img-common/private/utils/level-options-error" (dict 

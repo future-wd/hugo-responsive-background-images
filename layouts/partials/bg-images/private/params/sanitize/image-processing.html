@@ -58,6 +58,20 @@
   {{ end }}
 {{ end }}
 
+{{/* width level only /*}}
+{{/* .width can only be set if its in a dict in a widths slice */}}
+{{ if and .width (eq .level "width") }}
+  {{ if ne (printf "%T" .width) "int" }}
+    {{ partial "img-common/private/utils/level-options-error" (dict 
+    "var" "width"
+    "val" .width
+    "opts" "an integer"
+    "ctx" $error_ctx) }}
+  {{ else}}
+    {{ $s.SetInMap "params" "width" .width }}
+  {{ end }}
+{{ end }}
+
 {{ with .quality }}
   {{ if not (and (eq (printf "%T" .) "int") (and (ge . 1) (le . 100))) }}
     {{ partial "img-common/private/utils/level-options-error" (dict 

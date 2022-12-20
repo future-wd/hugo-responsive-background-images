@@ -1,9 +1,8 @@
-{{ $fallback := false }}
 {{ $format := "jpeg" }}
 {{ if .no_jpg }}
   {{ $format = "" }}
 {{ end }}
-{{ $fallback = partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append $format)) }}
+{{ $fallback := partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append $format)) }}
 {{ $webp :=    partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "options" (.options | append "webp")) }}
 {{ $lqip := false }}
 {{ $lqip_webp := false }}

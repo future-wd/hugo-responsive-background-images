@@ -43,9 +43,9 @@
       {{/* widths resized may be more natural when width level params are implemented */}}
       {{ $widths_resized := slice }}
       {{ range $width := $restricted_widths }}
-        {{ $img := partial "bg-images/private/gen/images" (merge $params (dict "width" $width)) }}
+        {{ $img := partial "bg-images/private/gen/images" (merge $params . ) }}
         {{ $resized = $resized | append $img }}
-        {{ $widths_resized = $widths_resized | append (dict "width" $width "resized" $img)}}
+        {{ $widths_resized = $widths_resized | append (dict "width" $width.width "resized" $img) }}
       {{ end }}
 
       {{ $params = merge $params (dict "widths_resized" $widths_resized) }}
