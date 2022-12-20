@@ -81,7 +81,7 @@
       "ctx" $error_ctx
     ) }}
   {{ else }}
-    {{ $s.Add "options" . }}
+    {{ $s.Add "options" (printf "q%v" .) }}
   {{ end }}
 {{ end }}
 
