@@ -37,11 +37,11 @@
 
 {{ with .fill_ratio }}
   {{ $error := false }}
-  {{ if not reflect.IsSlice . }}
+  {{ if not (reflect.IsSlice .) }}
     {{ $error = true}}
   {{ else }}
     {{ range . }}
-      {{ if not eq (printf "%T" .) int }}
+      {{ if not (eq (printf "%T" .) "int") }}
         {{ $error = true }}
       {{ end }}
     {{ end }}
