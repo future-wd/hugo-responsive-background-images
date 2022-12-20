@@ -37,7 +37,7 @@
     
     {{ with .suppress_width_warning }}
       {{ if ne (printf "%T" .) "bool" }}
-        {{ partial "img-common/private/utils/level-options-error" (dict 
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
           "var" "suppress_width_warning"
           "val" .
           "opts" "true/false"
@@ -47,7 +47,7 @@
 
     {{ with .root_margin }}
     {{ if ne (printf "%T" .) "int" }}
-      {{ partial "img-common/private/utils/level-options-error" (dict 
+      {{ partial "bg-images/private/utils/level-options-error" (dict 
         "var" "root_margin"
         "val" .
         "opts" "integer"
@@ -78,19 +78,19 @@
         {{ $s.SetInMap "params" "src" . }}
         {{ $s.SetInMap "params" "img" $img }}
       {{ else  }}
-        {{ partial "img-common/private/utils/level-options-error" (dict 
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
         "var" "src"
         "val" .
         "opts" "an image resource relative path string"
         "ctx" $error_ctx) }}
       {{ end }}
     {{ else }}
-      {{ partial "img-common/private/utils/level-options-error" (dict "var" "src" "ctx" $error_ctx) }}
+      {{ partial "bg-images/private/utils/level-options-error" (dict "var" "src" "ctx" $error_ctx) }}
     {{ end }}
 
     {{ with .selector }}
       {{ if ne (printf "%T" .) "string" }}
-        {{ partial "img-common/private/utils/level-options-error" (dict 
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
           "var" "selector"
           "val" .
           "opts" "a css selector string"
@@ -99,7 +99,7 @@
         {{ $s.SetInMap "params" "selector" . }}
       {{ end }}
     {{ else }}
-      {{ partial "img-common/private/utils/level-options-error" (dict 
+      {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "selector"
       "ctx" $error_ctx) }}
     {{ end }}
@@ -119,7 +119,7 @@
           {{ $width := partial "bg-images/private/params/sanitize/image-processing" (merge . (dict "level" "width")) }}
           {{ $widths = $widths | append (merge $.processing_params $width) }}
         {{ else }}
-          {{ partial "img-common/private/utils/level-options-error" (dict 
+          {{ partial "bg-images/private/utils/level-options-error" (dict 
             "var" "widths slice item"
             "val" .
             "opts" "an integer or dict see readme"
@@ -128,7 +128,7 @@
       {{ end }}
       {{ $s.SetInMap "params" "widths" $widths }}
     {{ else }}
-      {{ partial "img-common/private/utils/level-options-error" (dict 
+      {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "widths"
       "val" .
       "opts" "a slice of integers or dicts"
@@ -141,7 +141,7 @@
 
     {{ with .lazy }}
     {{ if ne (printf "%T" .) "bool" }}
-        {{ partial "img-common/private/utils/level-options-error" (dict 
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
         "var" "lazy"
         "val" .
         "opts" "true or false"
@@ -173,7 +173,7 @@
 
     {{ with .min_width_difference }}
       {{ if ne (printf "%T" .) "int" }}
-        {{ partial "img-common/private/utils/level-options-error" (dict 
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
           "var" "min_width_difference"
           "val" .
           "opts" "an integer"
@@ -185,7 +185,7 @@
 
     {{ with .no_jpg }}
       {{ if ne (printf "%T" .) "bool" }}
-        {{ partial "img-common/private/utils/level-options-error" (dict 
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
           "var" "no_jpg"
           "val" .
           "opts" "true/false"

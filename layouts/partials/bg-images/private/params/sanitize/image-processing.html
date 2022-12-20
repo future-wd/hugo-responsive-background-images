@@ -47,7 +47,7 @@
     {{ end }}
   {{ end }}
   {{ if $error }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "fill_ratio"
       "val" .
       "opts" "slice of 2 integers"
@@ -63,7 +63,7 @@
 {{/* .width can only be set if its in a dict in a widths slice */}}
 {{ if and .width (eq .level "width") }}
   {{ if ne (printf "%T" .width) "int" }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
     "var" "width"
     "val" .width
     "opts" "an integer"
@@ -75,7 +75,7 @@
 
 {{ with .quality }}
   {{ if not (and (eq (printf "%T" .) "int") (and (ge . 1) (le . 100))) }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "quality"
       "val" .
       "opts" "integers between 1-100 inclusive"
@@ -88,7 +88,7 @@
 
 {{ with .rotate }}
   {{ if not (and (eq (printf "%T" .) "int") (and (ge . 1) (le . 360))) }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "rotate"
       "val" .
       "opts" "integers between 1-360 inclusive"
@@ -102,7 +102,7 @@
 {{ with .resample_filter }}
   {{ $filter_opts := (slice "Box" "Lanczos" "CatmullRom" "MitchellNetravali" "Linear" "NearestNeighbor") }}
   {{ if not (in $filter_opts .) }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "resample_filter"
       "val" .
       "opts" (delimit $filter_opts ", ")
@@ -116,7 +116,7 @@
 {{ with .hint }}
   {{ $hint_opts := (slice "picture" "photo" "drawing" "icon" "text") }}
   {{ if not (in $hint_opts . ) }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "hint"
       "val" .
       "opts" (delimit $hint_opts ", ")
@@ -130,7 +130,7 @@
 {{with .anchor }}
   {{ $anchor_opts := (slice "Smart" "Center" "TopLeft" "Top" "TopRight" "Left" "Right" "BottomLeft" "Bottom" "BottomRight") }}
   {{ if not (in $anchor_opts .) }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "anchor"
       "val" .
       "opts" (delimit $anchor_opts ", ")
@@ -144,7 +144,7 @@
 {{ with .background_color }}
   {{ $hex := findRE `^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$` . }}
   {{ if not $hex }}
-    {{ partial "img-common/private/utils/level-options-error" (dict 
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
       "var" "background_color"
       "val" .
       "opts" "3 or 6 digit hex color code"
