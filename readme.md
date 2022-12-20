@@ -174,21 +174,18 @@ v0.0.5
 - rename $not_lazy_selectors to $eager_selectors
 - move lqip generation to partial (Still experimental due to large blur image files)
 - restrict-widths (local file for now) accepts slice of widths, or slice of maps which includes widths
+- option of fit_ratio to avoid wide images for narrow screens
+- params can be added at a width level
 
 #### TODO
 
 v0.0.5
-  - update readme to reflect new widths structure and check other params
-- should there be a disable_lazy site param to override?
-- add .fill_ratio to params and pass to image processing - TEST
+- update readme to reflect new widths structure and check other params
+- check for caching issues and use partialCached
+- should there be a disable_lazy site param to override? or does lazyload degrade gracefully if not js class?
 - placeholder generation - check current setup (no blur config, no size config, no crop compensation yet)
-- remove .Crop from image-processing as it does not work with responsive images. oversight. change ratio to fit_ratio and update responsive-images
 - test dominant
 - test sanitization at different levels
-- move image-processing.html sanitize to common (returns slice)
-- after testing, move placeholder var sanitization on responsive-images module
-- override lazy at a site config level??
-- add width level config
 - use resources.Copy to rename lqip image resource for easy debug in browser. check how lqip is handled in responsive-images
 - option for publish scss rather than compile to css and gen .RelPermalink with .Publish
 - option for publish js with .Publish
