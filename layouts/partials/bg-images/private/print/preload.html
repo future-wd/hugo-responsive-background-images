@@ -30,7 +30,8 @@
 {{ end }}
 
 {{/* generate tags. type="image/webp" helps ensure that
-  **  non webp browsers don't waste time downloading */}}
+  **  non webp browsers don't waste time downloading 
+  ** generally browsers which support preload, support webp */}}
 {{ range $index, $image := $preload_images }}
   {{ $count := 0 }}
   {{ $prev_width := "" }}
