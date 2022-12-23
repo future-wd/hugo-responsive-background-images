@@ -15,7 +15,7 @@
 {{ $params := partialCached "bg-images/private/params/params" . . }}
 
 {{/* run per page */}}
-{{ partial "bg-images/private/print/prefetch" (merge $params (dict "ctx" .Page )) }}
+{{ partial "bg-images/private/print/preload" (merge $params (dict "ctx" .Page )) }}
 
 {{/* run once */}}
 {{ partialCached "bg-images/private/gen/css-resource" $params .  }}
