@@ -1,6 +1,6 @@
 {{- /*
-  bg-images/private/print/prefetch.html
-    Prints prefetch tags. Enables browser to download non lazyloaded 
+  bg-images/private/print/preload.html
+    Prints preload tags. Enables browser to download non lazyloaded 
     bg-images before css has been fully downloaded and parsed
 
   @author @sean-au
@@ -12,26 +12,26 @@
   @access private
 
   @example - Hugo Template
-  {{ partial "bg-images/private/print/prefetch" (dict "params" $params "ctx" .) }}
+  {{ partial "bg-images/private/print/preload" (dict "params" $params "ctx" .) }}
 
 */ -}}
 
 {{/* add non lazyload images of current page to slice */}}
-{{ $prefetch_images := slice }}
-{{ $prefetch_lqip := slice }}
+{{ $preload_images := slice }}
+{{ $preload_lqip := slice }}
 
 
 {{ range where .images "ctx.RelPermalink" "=="  $.ctx.RelPermalink}}
   {{ if ne .lazy true }}
-    {{ $prefetch_images = $prefetch_images | append . }}
+    {{ $preload_images = $preload_images | append . }}
   {{ else if (eq .placeholder "lqip") }}
-    {{ $prefetch_lqip = $prefetch_lqip | append . }}
+    {{ $preload_lqip = $preload_lqip | append . }}
   {{ end }}
 {{ end }}
 
 {{/* generate tags. type="image/webp" helps ensure that
   **  non webp browsers don't waste time downloading */}}
-{{ range $index, $image := $prefetch_images }}
+{{ range $index, $image := $preload_images }}
   {{ $count := 0 }}
   {{ $prev_width := "" }}
   {{ range .widths_resized }}
@@ -47,7 +47,7 @@
   {{ end }}
 {{ end }}
 
-{{ range $index, $image := $prefetch_lqip }}
+{{ range $index, $image := $preload_lqip }}
   {{ $count := 0 }}
   {{ $prev_width := "" }}
   {{ range .widths_resized }}

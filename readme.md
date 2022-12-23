@@ -176,7 +176,7 @@ v0.0.5
 - restrict-widths (local file for now) accepts slice of widths, or slice of maps which includes widths
 - option of fit_ratio to avoid wide images for narrow screens
 - params can be added at a width level
-- images are prefetched
+- bg-images are preloaded as the browser does not discover them until css fully downloaded and parsed
 
 #### TODO
 
@@ -196,7 +196,7 @@ v0.0.5
 
 v0.0.6
 - fix up lqip as currently too big with blur applied
-- prefetch lazy webp placeholders
+- preload lazy webp placeholders
 - fix placeholder blur, currently looks great but increases lqip size x5
 
 # md
