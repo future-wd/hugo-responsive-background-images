@@ -176,6 +176,7 @@ v0.0.5
 - restrict-widths (local file for now) accepts slice of widths, or slice of maps which includes widths
 - option of fit_ratio to avoid wide images for narrow screens
 - params can be added at a width level
+- images are prefetched
 
 #### TODO
 
@@ -191,14 +192,7 @@ v0.0.5
 - option for publish js with .Publish
 - add placeholder: jpg_quality, webp_quality and general jpg_quality, webp_quality
 - input sanitization does not catch error if .src does not match image resource
-- add fill ratio and oversize option to each width e.g.
-  widths:
-  - width: 600
-    fill_ratio: [9,16]
-    oversize: 100
-  *OR*
-  widths: [600, 900] (conditional transformation is nearly complete already)
-- prefetch lazyload images after domcontentloaded fired
+
 
 v0.0.6
 - fix up lqip as currently too big with blur applied
