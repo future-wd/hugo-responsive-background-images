@@ -177,6 +177,7 @@ v0.0.5
 - option of fit_ratio to avoid wide images for narrow screens
 - params can be added at a width level
 - bg-images are preloaded as the browser does not discover them until css fully downloaded and parsed
+- .fill_ratio changed to .aspect_ratio
 
 #### TODO
 
