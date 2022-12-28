@@ -35,7 +35,7 @@
 
 {{ $error_ctx := merge .error_ctx (dict "level" .level) }}
 
-{{ with .fill_ratio }}
+{{ with .aspect_ratio }}
   {{ $error := false }}
   {{ if not (reflect.IsSlice .) }}
     {{ $error = true}}
@@ -48,14 +48,14 @@
   {{ end }}
   {{ if $error }}
     {{ partial "bg-images/private/utils/level-options-error" (dict 
-      "var" "fill_ratio"
+      "var" "aspect_ratio"
       "val" .
       "opts" "slice of 2 integers"
       "ctx" $error_ctx
     ) }}
   {{ else }}
-    {{ $fill_ratio := div (index . 1 | float) (index . 0 | float) }}
-    {{ $s.SetInMap "params" "fill_ratio" $fill_ratio }}
+    {{ $aspect_ratio := div (index . 1 | float) (index . 0 | float) }}
+    {{ $s.SetInMap "params" "aspect_ratio" $aspect_ratio }}
   {{ end }}
 {{ end }}
 
