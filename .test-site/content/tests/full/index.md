@@ -6,7 +6,7 @@ type: full
 bg_images:
   widths: 
   - width: 600
-    fill_ratio: [9,16]
+    aspect_ratio: [9,16]
   - width: 900
   - width: 3000
   images:

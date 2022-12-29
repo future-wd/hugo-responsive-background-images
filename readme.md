@@ -114,7 +114,7 @@ bg-images:
     selector: .section--hero
     widths:
     - width: 500
-      fit_ratio: [9, 16] # vertical mobile ratio
+      aspect_ratio: [9, 16] # vertical mobile ratio
     - width: 900
     - width: 1200
 ```
@@ -138,7 +138,7 @@ to add:
 
 | Name             | Site | Page | Image | Width | Description                            | Default |
 | ---------------- | ---- | ---- | ----- | ----  | -------------------------------------- | ------- |
-| fill_ratio (dev) | YES  | YES  | YES   | YES   | Ratio for fill resize (slice W,H)      | `null`  |
+| aspect_ratio (dev) | YES  | YES  | YES   | YES   | Ratio for fill resize (slice W,H)      | `null`  |
 | quality          | YES  | YES  | YES   | YES   | Image resize quality (int)             | `75` *  |
 | rotate           | YES  | YES  | YES   | YES   | Counter clockwise rotation (int)       | `null`  |
 | resample_filter  | YES  | YES  | YES   | YES   | Filter for resize (string)             | `null`  |
@@ -148,10 +148,6 @@ to add:
 
 * `quality` default of 75 will override your hugo image processing defaults, but is necessary to keep files sizes down.
 
-Available params:
-
-- all image processing options
-- fit_ratio
 
 ### Change log
 
