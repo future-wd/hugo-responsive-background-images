@@ -1,14 +1,18 @@
 bg_images:
   widths: [600, 1000, 1500, 2000]
-  root_margin: 25
   min_width_difference: 30
-  suppress_width_warning: false
   placeholder: false
-  # jpg_quality: 70
-  # webp_quality: 70
-  lqip:
+  quality: 75
+  lqip: #experimental 
     div: 1.5
     blur: 0
     quality: 20
     # jpg_quality: 70
     # webp_quality: 70
+  lazy: false
+  no_jpg: false 
+  # hugo image processing options
+  
+  # site config only below
+  root_margin: 25
+  suppress_width_warning: false

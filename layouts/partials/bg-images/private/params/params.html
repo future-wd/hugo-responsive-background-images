@@ -1,88 +1,58 @@
-  {{- /*
-    bg-images/private/variables.html
-    Generates variables and returns dict of variables
-    @author @sean-au
-  
-    @context - page context
-
-    @returns dict:
-      .images - array of all images for processing (dict)
-      .selectors - comma delimited string of all bg image selectors
-      .lazy_selectors - json array of lazy load selectors for use in JS
-  
-    @access private
-  
-    @example - Hugo Template
-    {{ $variables := partial "bg-images/private/variables" . }}
-  
-  */ -}}
 {{ $images := slice }}
 {{ $selectors := slice }}
-{{ $lazy_selectors := slice }}
-{{ $not_lazy_selectors := slice }}
+{{ $eager_selectors := slice }}
 
-{{/* import sanitized config params */}}
-{{ $config := partial "bg-images/private/params/config" . }}
+{{ $error_ctx := dict 
+  "element" "bg-image"
+  "module" "Hugo Responsive Background Images"}}
 
+{{ $processing_params := partial "bg-images/private/params/sanitize/image-processing" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx)) }}
+{{ $params := partial "bg-images/private/params/sanitize/image-general" (merge site.Params.bg_images (dict "level" "site" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
+{{/* range over pages with bg_images */}}
 {{ range where site.Pages "Params.bg_images" "!=" nil }}
-  {{ $ctx := .}}
-  {{ range $image := .Params.bg_images}}
-    {{/* sanitize user inputs */}}
-    {{ partial "bg-images/private/params/sanitize-inputs" (merge $image (dict "ctx" $ctx)) }}
-
-    {{/* collect params from different places and merge */}}
-    {{ $lqip := dict
-      "blur" ($image.lqip.blur | default $config.blur) 
-      "div" ($image.lqip.div | default $config.div)
-      "quality" ($image.lqip.quality | default $config.quality) }}
-    {{ $placeholder := $image.placeholder | default $config.placeholder }}
-    {{ $image = merge $image (dict 
-      "ctx" $ctx 
-      "lqip" $lqip
-      "placeholder" $placeholder) }}
-
-    {{/* modify params post sanitization */}}
-    {{ $widths := $image.widths | default $config.widths }}
-    {{ $widths = sort $widths }}
-    {{ $sanitized_widths := partial "bg-images/private/utils/sanitize-widths" (dict 
-      "ctx" $ctx
-      "img" ($ctx.Resources.Get $image.src)
-      "widths" $widths
-      "fill_ratio" false
-      "difference" $config.difference
-      "suppress" $config.suppress ) }}
-    
-      {{/*  if slice widths: [500,600] change to
-            widths:
-            - width: 500
-              resized: [map] */}}
-      {{ $widths_dict := slice }}
-      {{ range $sanitized_widths }}
-        {{ $widths_dict = $widths_dict | append (dict "width" .) }}
-      {{ end }}
-      {{ $widths_resized := slice }}
-      {{ range $width := $widths_dict }}
-        {{ $resized := partial "bg-images/private/gen/images" (dict "image" $image "width" $width.width) }}
-        {{ $width = merge $width (dict "resized" $resized) }}
-        {{ $widths_resized = $widths_resized | append $width }}
-      {{ end }}
+  {{ $ctx := . }}
+  {{ with .Params.bg_images }}
+    {{ $error_ctx = merge $error_ctx (dict "page" $ctx) }}
+    {{ $page_processing_params := partial "bg-images/private/params/sanitize/image-processing" 
+      (merge . (dict "level" "page" "error_ctx" $error_ctx)) }}
+    {{ $processing_params = merge $processing_params $page_processing_params }}
+    {{ $page_params := partial "bg-images/private/params/sanitize/image-general" 
+      (merge . (dict "level" "page" "error_ctx" $error_ctx "processing_params" $processing_params)) }}
+    {{ $params = merge $params $page_params }}
+    {{ range .images }}
+      {{ $error_ctx = merge $error_ctx (dict 
+        "img" ($ctx.Resources.GetMatch .src)) }}
+      {{ $image_processing_params := partial "bg-images/private/params/sanitize/image-processing" 
+        (merge . (dict "level" "image" "error_ctx" $error_ctx)) }}
+      {{ $processing_params = merge $processing_params $image_processing_params }}
+      {{ $image_params := partial "bg-images/private/params/sanitize/image-general" 
+        (merge . (dict "level" "image" "ctx" $ctx "error_ctx" $error_ctx "processing_params" $processing_params)) }}
+      {{ $params = merge $params $image_params }}
+      {{ $restricted_widths := partial "img-common/private/utils/restrict-widths" (dict 
+        "ctx" $ctx
+        "img" $params.img
+        "widths" $params.widths
+        "aspect_ratio" $params.aspect_ratio
+        "difference" $params.difference
+        "suppress" site.Params.suppress_width_warning ) }}
+  
       {{ $resized := slice }}
-      {{ range $width := $sanitized_widths }}
-        {{ $img := partial "bg-images/private/gen/images" (dict "image" $image "width" $width) }}
+      {{/* widths resized may be more natural when width level params are implemented */}}
+      {{ $widths_resized := slice }}
+      {{ range $width := $restricted_widths }}
+        {{ $img := partial "bg-images/private/gen/images" (merge $params . ) }}
         {{ $resized = $resized | append $img }}
+        {{ $widths_resized = $widths_resized | append (dict "width" $width.width "resized" $img) }}
       {{ end }}
-    {{ $image = merge $image (dict 
-      "widths" $sanitized_widths 
-      "resized" $resized
-      "widths_resized" $widths_resized) }}
 
-    {{/* add params for export below */}}
-    {{ $images = $images | append $image }}
-    {{ $selectors = $selectors | append .selector }}
-    {{ if .lazy }}
-      {{ $lazy_selectors = $lazy_selectors | append .selector }}
-    {{ else }}
-      {{ $not_lazy_selectors = $not_lazy_selectors | append .selector }}
+      {{ $params = merge $params (dict "widths_resized" $widths_resized) }}
+
+      {{/* add params for export below */}}
+      {{ $images = $images | append $params }}
+      {{ $selectors = $selectors | append $params.selector }}
+      {{ if ne $params.lazy true }}
+        {{ $eager_selectors = $eager_selectors | append $params.selector }}
+      {{ end }}
     {{ end }}
   {{ end }}
 {{ end }}
@@ -91,6 +61,11 @@
 {{ return dict 
   "images" $images
   "selectors" $selectors
-  "lazy_selectors" $lazy_selectors
-  "not_lazy_selectors" $not_lazy_selectors
-  "config" $config }}
+  "eager_selectors" $eager_selectors }}
+
+{{/* 
+  ** print/preload uses .images 
+  ** print/media-queries uses .images
+  ** print/general-css uses .selectors .eager_selectors
+  ** removed $params from return dict
+  */}}

@@ -1,18 +1,21 @@
 /* eslint-disable */
-{{- /*    
+{{- /*
+  assets/js/bg-images.js
+  Generates a JS file, from a JS hugo template
+  @author @sean-au
 
+  @context - site context
 
+  @access private
 
-  context: . - page context
+  @example - Use with resources.ExecuteAsTemplate
 
 */ -}}
-{{- /*$params := partial "bg-images/private/params/params" . */ -}}
+{{- $params := partial "bg-images/private/params/js-params" . }}
 
-{{- $list := .lazy_selectors | jsonify -}}
-const list = {{ $list }};
-{{ $rootMargin := .config.root_margin }}
+const list = {{ $params.lazy_selectors }};
 const options = {
-  rootMargin: {{ printf "'0px 0px %vpx 0px'" $rootMargin }},
+  rootMargin: {{ printf "'0px 0px %vpx 0px'" site.Params.bg_images.root_margin }},
 }
 /* eslint-enable */
 

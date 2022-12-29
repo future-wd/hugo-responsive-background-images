@@ -3,7 +3,7 @@
   Alias for bg-images/private/generate-css.html. Used in website's <head>
   @author @sean-au
 
-  @context - page context
+  @context - site context
 
   @access public
 
@@ -12,12 +12,10 @@
 
 */ -}}
 
-{{ $params := partial "bg-images/private/params/params" . }}
-{{/* add to page scoped scratch for use in js partial 
-  ** JS partial MUST be lower than the head partial for it to work 
-  */}}
-{{ .Scratch.Set "bg_params" $params }}
+{{ $params := partialCached "bg-images/private/params/params" . . }}
 
-{{ partial "bg-images/private/print/prefetch" (dict "params" $params "ctx" .) }}
+{{/* run per page */}}
+{{ partial "bg-images/private/print/preload" (merge $params (dict "ctx" .Page )) }}
 
-{{ partial "bg-images/private/gen/css-resource" $params }}
+{{/* run once */}}
+{{ partialCached "bg-images/private/gen/css-resource" $params .  }}

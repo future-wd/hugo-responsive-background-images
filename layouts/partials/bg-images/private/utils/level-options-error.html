@@ -6,23 +6,27 @@
   @author @sean-au
 
   @version 1.0.0
-  Also used in github.com/future-wd/hugo-responsive-images
+
+  @usage
+  - github.com/future-wd/hugo-responsive-images
+  - github.com/future-wd/hugo-responsive-background-images
 
   @context (dict)
     "val" (string) - variable value (user input)
     "opts" (string)  correct options
     "var" (string) - variable name in error (required)
     "ctx" (map)
-      .page - page context (required)
+      .ctx - page context (required)
       .img - image page resource object
       .element - element name e.g bg-image/image (required)
       .module - module name (required)
+      .level - config level (site/page/image/width)
 
   @access private
 
   @example - Go Template
     {{ partial "bg-images/private/utils/options-error" (dict 
-    "var" "fillRatio array item"
+    "var" "aspect_ratio array item"
     "val" .
     "opts" "2x integers in an array/slice"
     "ctx" $params
@@ -30,23 +34,29 @@
 
     Input missing:
     {{ partial "bg-images/private/utils/options-error" (dict 
-    "var" "fillRatio array item"
+    "var" "aspect_ratio array item"
     "ctx" $params
     ) }}
 
 */}}
 
+{{ $page := "" }}
+{{ if ne .level "site" }}
+  {{ $page := printf "on page %v " .ctx.ctx.RelPermalink }}
+{{ end }}
+
+{{ $image := "" }}
+{{ with .ctx.img }}
+  {{ $image = printf "for %s " .RelPermalink }}
+{{ end }}
+
 {{ $message := "" }}
 {{ if not .val }}
-  {{ if not .ctx.img }}
-    {{ $message = printf "Configuration item \"%s\" on page %s has not been provided." .var .ctx.page.RelPermalink }}
-  {{ else }}
-    {{ $message = printf "Configuration item \"%s\" for %s %s on page %s has not been provided." .var .ctx.element .ctx.img.RelPermalink .ctx.page.RelPermalink }}
-  {{ end }}
+  {{ $message = printf "%s %s config item \"%s\" %s%shas not been provided." .ctx.element .ctx.level .var $image $page }}
 {{ else }}
-  {{ $message = printf "Invalid \"%s\" value of \"%v\" for %s %s on page %s. Must be %s." .var .val .ctx.element .ctx.img.RelPermalink .ctx.page.RelPermalink .opts }}
+  {{ $message = printf "%s %s config item \"%s\" with value of \"%v\" %s%s must be %s." .ctx.element .ctx.level .var .val $image $page .opts }}
 {{ end }}
 
 
-{{ $error := partial "bg-images/private/utils/errorf" (dict "message" $message "module" .ctx.module) }}
+{{ $error := partial "img-common/private/utils/errorf" (dict "message" $message "module" .ctx.module) }}
 

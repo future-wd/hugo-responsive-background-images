@@ -1,47 +1,17 @@
-{{- /*
-  bg-images/private/gen/images.html
-  Generates original and webp format images based on image and width input.
-
-  @author @sean-au
-
-  @context
-    .image
-      .src - page resource file string
-      .ctx - page context
-    .width - resize width integer
-
-  @returns dict:
-    .original - original format image
-    .webp - webp format image
-
-  @access private
-
-  @example - Hugo Template
-  {{- $resized := partial "bg-images/private/generate-images" (dict "image" $image "width" $width) }}
-
-*/ -}}
-
-{{ $img := .image.ctx.Resources.GetMatch .image.src }}
-{{ $original := $img.Resize (printf "%vx" .width ) }}
-{{ $jpg := $img.Resize (printf "%vx jpeg q75" .width ) }}
-{{ $webp := $img.Resize (printf "%vx webp q75" .width ) }}
-{{ $lqip := false }}
+{{ $format := "jpeg" }}
+{{ if .no_jpg }}
+  {{ $format = "" }}
+{{ end }}
+{{ $fallback := partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "aspect_ratio" .aspect_ratio "options" (.options | append $format)) }}
+{{ $webp :=     partial "img-common/private/utils/image-resize" (dict "img" .img "width" .width "aspect_ratio" .aspect_ratio "options" (.options | append "webp")) }}
+{{ $lqip_fallback := false }}
 {{ $lqip_webp := false }}
-{{ $single := false }}
-{{ if eq .image.placeholder "lqip"}}
-  {{ $lqip = $img.Resize (printf "%vx jpeg q%v" (div .width 1.5 | int) .image.lqip.quality) }}
-  {{ $lqip = $lqip.Filter (images.GaussianBlur .image.lqip.blur) }}
-  {{ $lqip = $lqip.RelPermalink }}
-  {{ $lqip_webp = $img.Resize (printf "%vx webp q%v" (div .width .image.lqip.div | int) .image.lqip.quality) }}
-  {{ $lqip_webp = $lqip_webp.Filter (images.GaussianBlur .image.lqip.blur) }}
-  {{ $lqip_webp = $lqip_webp.RelPermalink }}
-{{ else if (eq .image.placeholder "dominant") }}
-  {{ $single = $img.Resize "1x gif" }}
+{{ if eq .placeholder "lqip"}}
+  {{ $lqip_fallback = partial "bg-images/private/gen/lqip" (merge . (dict "format" $format)) }}
+  {{ $lqip_webp = partial "bg-images/private/gen/lqip" (merge . (dict "format" "webp")) }}
 {{ end }}
 {{ return (dict 
-  "original" $original 
-  "jpg" $jpg
+  "fallback" $fallback
   "webp" $webp 
-  "lqip" $lqip 
-  "lqip_webp" $lqip_webp 
-  "single" $single) }}
+  "lqip_fallback" $lqip_fallback
+  "lqip_webp" $lqip_webp ) }}
