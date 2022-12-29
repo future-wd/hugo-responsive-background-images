@@ -1,0 +1,4 @@
+imports:
+- path: github.com/future-wd/hugo-responsive-background-images
+# uses go.mod for replacement due to nested module
+# replacements: "github.com/future-wd/hugo-responsive-background-images -> ../../"

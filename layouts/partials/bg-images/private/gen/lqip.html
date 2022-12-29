@@ -1,0 +1,4 @@
+{{ $lqip = .img.Resize (printf "%vx %v %v" (div .width .lqip.div | int) .format .options) }}
+{{/* $lqip = $lqip.Filter (images.GaussianBlur .lqip.blur) */}}
+{{ $lqip = $lqip.RelPermalink }}
+{{ return $lqip }}

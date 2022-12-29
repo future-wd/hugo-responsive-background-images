@@ -1,0 +1,160 @@
+{{/*
+  bg-images/private/sanitize/image-processing.html 
+  Sanitizes image processing params
+    - quality
+    - rotate
+    - resample_filter
+    - hint
+    - anchor
+    - background_color
+
+  @author @sean-au
+
+  @context 
+    ...$params 
+    $.error_ctx - variables for error display
+
+  @returns
+    Slice of options
+
+  @access private
+
+  @example - Go Template
+  {{ $$error_ctx := dict 
+    "page" .ctx 
+    "img" (.ctx.Resources.GetMatch .src)
+    "element" "bg-image"
+    "level" .level
+    "module" "Hugo Responsive Background Images"}}
+  {{ $general_params := partial "bg-images/private/params/sanitize/image-general" (merge . (dict $"error_ctx" $$error_ctx)) }}
+  */}}
+{{ $s := newScratch }}
+{{ $s.Set "options" slice }}
+{{ $s.Set "params" dict }}
+
+
+{{ $error_ctx := merge .error_ctx (dict "level" .level) }}
+
+{{ with .aspect_ratio }}
+  {{ $error := false }}
+  {{ if not (reflect.IsSlice .) }}
+    {{ $error = true}}
+  {{ else }}
+    {{ range . }}
+      {{ if not (eq (printf "%T" .) "int") }}
+        {{ $error = true }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ if $error }}
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "aspect_ratio"
+      "val" .
+      "opts" "slice of 2 integers"
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+    {{ $aspect_ratio := div (index . 1 | float) (index . 0 | float) }}
+    {{ $s.SetInMap "params" "aspect_ratio" $aspect_ratio }}
+  {{ end }}
+{{ end }}
+
+{{/* width level only /*}}
+{{/* .width can only be set if its in a dict in a widths slice */}}
+{{ if and .width (eq .level "width") }}
+  {{ if ne (printf "%T" .width) "int" }}
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
+    "var" "width"
+    "val" .width
+    "opts" "an integer"
+    "ctx" $error_ctx) }}
+  {{ else}}
+    {{ $s.SetInMap "params" "width" .width }}
+  {{ end }}
+{{ end }}
+
+{{ with .quality }}
+  {{ if not (and (eq (printf "%T" .) "int") (and (ge . 1) (le . 100))) }}
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "quality"
+      "val" .
+      "opts" "integers between 1-100 inclusive"
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+    {{ $s.Add "options" (printf "q%v" .) }}
+  {{ end }}
+{{ end }}
+
+{{ with .rotate }}
+  {{ if not (and (eq (printf "%T" .) "int") (and (ge . 1) (le . 360))) }}
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "rotate"
+      "val" .
+      "opts" "integers between 1-360 inclusive"
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+    {{ $s.Add "options" . }}
+  {{ end }}
+{{ end }}
+
+{{ with .resample_filter }}
+  {{ $filter_opts := (slice "Box" "Lanczos" "CatmullRom" "MitchellNetravali" "Linear" "NearestNeighbor") }}
+  {{ if not (in $filter_opts .) }}
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "resample_filter"
+      "val" .
+      "opts" (delimit $filter_opts ", ")
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+    {{ $s.Add "options" . }}
+  {{ end }}
+{{ end }}
+
+{{ with .hint }}
+  {{ $hint_opts := (slice "picture" "photo" "drawing" "icon" "text") }}
+  {{ if not (in $hint_opts . ) }}
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "hint"
+      "val" .
+      "opts" (delimit $hint_opts ", ")
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+    {{ $s.Add "options" . }}
+  {{ end }}
+{{ end }}
+
+{{with .anchor }}
+  {{ $anchor_opts := (slice "Smart" "Center" "TopLeft" "Top" "TopRight" "Left" "Right" "BottomLeft" "Bottom" "BottomRight") }}
+  {{ if not (in $anchor_opts .) }}
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "anchor"
+      "val" .
+      "opts" (delimit $anchor_opts ", ")
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+    {{ $s.Add "options" . }}
+  {{ end }}
+{{ end }}
+
+{{ with .background_color }}
+  {{ $hex := findRE `^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$` . }}
+  {{ if not $hex }}
+    {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "background_color"
+      "val" .
+      "opts" "3 or 6 digit hex color code"
+      "ctx" $error_ctx
+    ) }}
+  {{ else }}
+    {{ $s.Add "options" . }}
+  {{ end }}
+{{ end }}
+
+{{ $s.SetInMap "params" "options" ($s.Get "options") }}
+
+{{ return $s.Get "params" }}

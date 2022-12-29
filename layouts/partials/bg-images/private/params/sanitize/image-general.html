@@ -1,0 +1,247 @@
+{{/*
+  bg-images/private/sanitize/image-general.html 
+  Sanitizes general image processing params
+
+  @author @sean-au
+
+  @context 
+    ...$params 
+    $.error_ctx - variables for error display
+
+  @returns
+    Dict of params
+
+  @access private
+
+  @example - Go Template
+  {{ $error_ctx := dict 
+    "page" .ctx 
+    "img" (.ctx.Resources.GetMatch .src)
+    "element" "bg-image"
+    "level" .level
+    "module" "Hugo Responsive Background Images"}}
+  {{ $general_params := partial "bg-images/private/params/sanitize/image-general" (merge . (dict "error_ctx" $error_ctx)) }}
+  */}}
+{{ $s := newScratch }}
+{{ $s.Set "params" dict }}
+
+{{ $error_ctx := merge .error_ctx (dict "level" .level) }}
+
+{{/* all of these params cant be set at width level */}}
+{{ if ne .level "width" }}
+
+
+  {{/* site level only config (via config.yaml) */}}
+  {{/* only generate errors, dont add to params to keep overhead down */}}
+  {{ if eq .level "site" }}
+    
+    {{ with .suppress_width_warning }}
+      {{ if ne (printf "%T" .) "bool" }}
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
+          "var" "suppress_width_warning"
+          "val" .
+          "opts" "true/false"
+          "ctx" $error_ctx) }}
+      {{ end }}
+    {{ end }}
+
+    {{ with .root_margin }}
+    {{ if ne (printf "%T" .) "int" }}
+      {{ partial "bg-images/private/utils/level-options-error" (dict 
+        "var" "root_margin"
+        "val" .
+        "opts" "integer"
+        "ctx" $error_ctx) }}
+    {{ end }}
+  {{ end }}
+
+  {{ end }}
+
+  {{/* page level only config (via md) */}}
+  {{ if eq .level "page" }}
+    {{ $s.SetInMap "params" "ctx" .ctx }}
+  {{ end }}
+
+  {{/* image level only config (via md) */}}
+  {{ if eq .level "image" }}
+
+    {{ with .ctx }}
+      {{ $s.SetInMap "params" "ctx" . }}
+    {{ else }}
+      {{ errorf "dev error: ctx not passed to image-general.html" }}
+    {{ end }}
+
+    {{ with .src }}
+      {{/* FIX THIS SECTION NOT WORKING */}}
+      {{ $img := $.ctx.Resources.GetMatch . }}
+      {{ if $img }}
+        {{ $s.SetInMap "params" "src" . }}
+        {{ $s.SetInMap "params" "img" $img }}
+      {{ else  }}
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
+        "var" "src"
+        "val" .
+        "opts" "an image resource relative path string"
+        "ctx" $error_ctx) }}
+      {{ end }}
+    {{ else }}
+      {{ partial "bg-images/private/utils/level-options-error" (dict "var" "src" "ctx" $error_ctx) }}
+    {{ end }}
+
+    {{ with .selector }}
+      {{ if ne (printf "%T" .) "string" }}
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
+          "var" "selector"
+          "val" .
+          "opts" "a css selector string"
+          "ctx" $error_ctx) }}
+      {{ else }}
+        {{ $s.SetInMap "params" "selector" . }}
+      {{ end }}
+    {{ else }}
+      {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "selector"
+      "ctx" $error_ctx) }}
+    {{ end }}
+
+  {{ end }}
+
+
+  {{/* config for all levels except width*/}}
+  {{ with .widths }}
+    {{ if reflect.IsSlice . }}
+      {{ $widths := slice }}
+      {{ range . }}
+        {{ if eq (printf "%T" .) "int" }}
+          {{ $width := merge $.processing_params (dict "width" . ) }}
+          {{ $widths = $widths | append $width }}
+        {{ else if (reflect.IsMap .) }}
+          {{ $width := partial "bg-images/private/params/sanitize/image-processing" (merge . (dict "level" "width")) }}
+          {{ $widths = $widths | append (merge $.processing_params $width) }}
+        {{ else }}
+          {{ partial "bg-images/private/utils/level-options-error" (dict 
+            "var" "widths slice item"
+            "val" .
+            "opts" "an integer or dict see readme"
+            "ctx" $error_ctx) }}
+        {{ end }}
+      {{ end }}
+      {{ $s.SetInMap "params" "widths" $widths }}
+    {{ else }}
+      {{ partial "bg-images/private/utils/level-options-error" (dict 
+      "var" "widths"
+      "val" .
+      "opts" "a slice of integers or dicts"
+      "ctx" $error_ctx) }}
+    {{ end }}
+  {{ end }}
+
+  {{/* params not available at width level */}}
+  {{ if ne .level "width" }}
+
+    {{ with .lazy }}
+    {{ if ne (printf "%T" .) "bool" }}
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
+        "var" "lazy"
+        "val" .
+        "opts" "true or false"
+        "ctx" $error_ctx) }}
+      {{ else }}
+        {{ $s.SetInMap "params" "lazy" . }}
+      {{ end }}
+    {{ end }}
+
+    {{ with .placeholder }}
+      {{ $error := false }}
+      {{ $opts := slice "dominant" "lqip" }}
+      {{ $hex := findRE `^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$` . }}
+      {{ if ne (printf "%T" .) "string"  }}
+        {{ $error := true }}
+      {{ else if (and (not (in $opts . )) (not $hex)) }}
+        {{ $error := true }}
+      {{ end }}
+      {{ if $error }}
+        {{ partial "img-common/private/utils/options-error" (dict 
+          "var" "background_color"
+          "val" .
+          "opts" "dominant, lqip or 3/6 digit hex color code"
+          "ctx" $error_ctx) }}
+      {{ else }}
+        {{ $s.SetInMap "params" "placeholder" . }}
+      {{ end }}
+    {{ end }}
+
+    {{ with .min_width_difference }}
+      {{ if ne (printf "%T" .) "int" }}
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
+          "var" "min_width_difference"
+          "val" .
+          "opts" "an integer"
+          "ctx" $error_ctx) }}
+      {{ else }}
+      {{ $s.SetInMap "params" "difference" . }} 
+      {{ end }}
+    {{ end }}
+
+    {{ with .no_jpg }}
+      {{ if ne (printf "%T" .) "bool" }}
+        {{ partial "bg-images/private/utils/level-options-error" (dict 
+          "var" "no_jpg"
+          "val" .
+          "opts" "true/false"
+          "ctx" $error_ctx) }}
+      {{ else }}
+      {{ $s.SetInMap "params" "no_jpg" . }} 
+      {{ end }}
+    {{ end }}
+
+  {{ end }}
+{{ end }}
+
+
+{{/* these params need to be sanitized and added to scratch */}}
+{{ $params := dict
+  "blur" .lqip.blur
+  "div" .lqip.div
+  "quality" .lqip.quality
+}}
+{{ return $s.Get "params" }}
+
+
+{{/* 
+  bg-images:
+    # page level widths
+    widths: [400, 800, 1200]
+    images: 
+    - src: image1.jpg 
+      selector: .hero-bg 
+      # image level widths
+      widths: [400, 800, 1200]
+      widths:
+      - width: 400  <- dict, not int
+        param: val
+
+      if widths (slice of ints)
+      $widths := slice
+      range .widths
+      $widths = $widths | append dict "width" . 
+
+      #recurse 1 level, looks for all params
+      if widths (slice of dicts)
+      range.widths 
+      $widths = $widths | append partial params....
+
+
+      params sanitize/index.html
+        - collect image processing at this level and store
+        - collect params (input image proc)
+          - range over widths if present, pull in img proc params
+            - if dict merge params
+            - if string add params to width
+
+          
+                     
+      repeat at page level and merge both 
+
+      repeat at image level
+    */}}

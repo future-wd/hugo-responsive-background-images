@@ -29,8 +29,6 @@ Optionally add `<html class="no-js">`
 
 Then add the following to top of `<head>` which will replace `no-js` with `js` and add either `webp` or `no-webp`.
 
-n.b if you use `future-wd/hugo-responsive-images`, noscript support relies on `no-js` being hard coded.
-
 ```js
 <script>
  const noJs = document.documentElement.classList.contains('no-js');
@@ -90,15 +88,66 @@ bg_images:
 
 ```yaml
 bg-images:
-- src: image1.png # page resource relative to the page's markdown file
-  selector: .section--hero # css selector to which the background will be applied
-  widths: [500, 900, 1200] # optional override
-  lazy: true # optional see lazy load section for requirements
-  placeholder: lqip/dominant/css color code # optional
-  lqip: # optional override 
-    div: 4
-    blur: 5
+  widths: [...]
+  root_margin:
+  ... 
+  images:
+  - src: image1.png # page resource relative to the page's markdown file
+    selector: .section--hero # css selector to which the background will be applied
+    lazy: true # optional see lazy load section for requirements (still experimental)
+    placeholder: lqip/dominant/css color code # optional
+    lqip: # optional override 
+      div: 4
+      blur: 5
+    widths: [500, 900, 1200] # optional override
 ```
+
+### On page config, per width (in development)
+
+```yaml
+bg-images:
+  widths: [...]
+  root_margin:
+  ... 
+  images:
+  - src: image1.png
+    selector: .section--hero
+    widths:
+    - width: 500
+      aspect_ratio: [9, 16] # vertical mobile ratio
+    - width: 900
+    - width: 1200
+```
+
+| Name                   | Site | Page | Image | Width | Description                        | Default |
+| ---------------------- | ---- | ---- | ----- | ----  | ---------------------------------- | ------- |
+| src                    | NO   | NO   | YES   | NO    | Image path                      | (required) |
+| selector               | NO   | NO   | YES   | NO    | CSS selector for bg-image       | (required) |
+| root_margin            | YES  | NO   | NO    | NO    | Pixels below page to load bg-img   | `25`    |
+| suppress_width_warning | YES  | NO   | NO    | NO    | Suppress warning for narrow images | `false` |
+| min_width_difference   | YES  | YES  | YES   | NO    | If widths are too large for image,minimum width between a defined width and the image width for the image width to be used as resize width | `30`  |
+| lazy                   | YES  | YES  | YES   | NO    | Enable lazy loading               | `false`  |
+| placeholder            | YES  | YES  | YES   | NO    | Placeholder type                  | `false`  |
+
+to add:
+  "blur" .lqip.blur
+  "div" .lqip.div
+  "quality" .lqip.quality
+
+### Image processing params
+
+| Name             | Site | Page | Image | Width | Description                            | Default |
+| ---------------- | ---- | ---- | ----- | ----  | -------------------------------------- | ------- |
+| aspect_ratio (dev) | YES  | YES  | YES   | YES   | Ratio for fill resize (slice W,H)      | `null`  |
+| quality          | YES  | YES  | YES   | YES   | Image resize quality (int)             | `75` *  |
+| rotate           | YES  | YES  | YES   | YES   | Counter clockwise rotation (int)       | `null`  |
+| resample_filter  | YES  | YES  | YES   | YES   | Filter for resize (string)             | `null`  |
+| hint             | YES  | YES  | YES   | YES   | Hint for webp conversion (string)      | `null`  |
+| anchor           | YES  | YES  | YES   | YES   | Smart crop anchor point (string)       | `null`  |
+| background_color | YES  | YES  | YES   | YES   | BG color if transparency not supported | `null`  |
+
+* `quality` default of 75 will override your hugo image processing defaults, but is necessary to keep files sizes down.
+
 
 ### Change log
 
@@ -109,25 +158,43 @@ v0.04
 - markdown parameters are sanitized with error messages
 - placeholder option of lqip/dominant/color code
 
+v0.0.5
+
+- moved common utils to github.com/future-wd/hugo-imaging-common
+- level based sanitization and error messages
+- hugo image processing options added
+- only resize to 1x1 for .Color once! not at every width
+- js params moved to js partial
+- sanitize.html customize error message for site/page/image level config
+- change .resize.original and .resize.jpg to .resize.fallback and add np_jpg configuration to disable jpg conversion
+- rename $not_lazy_selectors to $eager_selectors
+- move lqip generation to partial (Still experimental due to large blur image files)
+- restrict-widths (local file for now) accepts slice of widths, or slice of maps which includes widths
+- option of fit_ratio to avoid wide images for narrow screens
+- params can be added at a width level
+- bg-images are preloaded as the browser does not discover them until css fully downloaded and parsed
+- .fill_ratio changed to .aspect_ratio
+
 #### TODO
 
-v0.05
-
-- prefetch lazy webp placeholders
-- fix placeholder blur
-- change .resize.original and .resize.jpg to .resize.fallback and add configuration to disable jpg conversion
-- add config santize
-- add option of disable_jpg=true
+v0.0.5
+- update readme to reflect new widths structure and check other params
+- check for caching issues and use partialCached
+- should there be a disable_lazy site param to override? or does lazyload degrade gracefully if not js class?
+- placeholder generation - check current setup (no blur config, no size config, no crop compensation yet)
+- test dominant
+- test sanitization at different levels
+- use resources.Copy to rename lqip image resource for easy debug in browser. check how lqip is handled in responsive-images
+- option for publish scss rather than compile to css and gen .RelPermalink with .Publish
+- option for publish js with .Publish
 - add placeholder: jpg_quality, webp_quality and general jpg_quality, webp_quality
 - input sanitization does not catch error if .src does not match image resource
-- add fill ratio and oversize option to each width e.g.
-  widths:
-  - width: 600
-    fill_ratio: [9,16]
-    oversize: 100
-  *OR*
-  widths: [600, 900] (conditional transformation is nearly complete already)
-- prefetch lazyload images after domcontentloaded fired
+
+
+v0.0.6
+- fix up lqip as currently too big with blur applied
+- preload lazy webp placeholders
+- fix placeholder blur, currently looks great but increases lqip size x5
 
 # md
 bg-image:

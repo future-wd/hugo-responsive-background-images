@@ -1,37 +1,38 @@
 {{- /*
-  bg-images/private/print/prefetch.html
-    Prints prefetch tags. Enables browser to download non lazyloaded 
+  bg-images/private/print/preload.html
+    Prints preload tags. Enables browser to download non lazyloaded 
     bg-images before css has been fully downloaded and parsed
 
   @author @sean-au
 
   @context dict 
-    .params - $params
+    ...$params
     .ctx - current page context
 
   @access private
 
   @example - Hugo Template
-  {{ partial "bg-images/private/print/prefetch" (dict "params" $params "ctx" .) }}
+  {{ partial "bg-images/private/print/preload" (dict "params" $params "ctx" .) }}
 
 */ -}}
 
 {{/* add non lazyload images of current page to slice */}}
-{{ $prefetch_images := slice }}
-{{ $prefetch_lqip := slice }}
-{{ range .params.images }}
-  {{ if eq .ctx.RelPermalink $.ctx.RelPermalink }}
-    {{ if ne .lazy true }}
-      {{ $prefetch_images = $prefetch_images | append . }}
-    {{ else if (eq .placeholder "lqip") }}
-      {{ $prefetch_lqip = $prefetch_lqip | append . }}
-    {{end }}
+{{ $preload_images := slice }}
+{{ $preload_lqip := slice }}
+
+
+{{ range where .images "ctx.RelPermalink" "=="  $.ctx.RelPermalink}}
+  {{ if ne .lazy true }}
+    {{ $preload_images = $preload_images | append . }}
+  {{ else if (eq .placeholder "lqip") }}
+    {{ $preload_lqip = $preload_lqip | append . }}
   {{ end }}
 {{ end }}
 
 {{/* generate tags. type="image/webp" helps ensure that
-  **  non webp browsers don't waste time downloading */}}
-{{ range $index, $image := $prefetch_images }}
+  **  non webp browsers don't waste time downloading 
+  ** generally browsers which support preload, support webp */}}
+{{ range $index, $image := $preload_images }}
   {{ $count := 0 }}
   {{ $prev_width := "" }}
   {{ range .widths_resized }}
@@ -47,7 +48,7 @@
   {{ end }}
 {{ end }}
 
-{{ range $index, $image := $prefetch_lqip }}
+{{ range $index, $image := $preload_lqip }}
   {{ $count := 0 }}
   {{ $prev_width := "" }}
   {{ range .widths_resized }}
@@ -62,6 +63,3 @@
     {{ $count = add 1 $count }}
   {{ end }}
 {{ end }}
-
-
-
