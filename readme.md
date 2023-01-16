@@ -1,4 +1,9 @@
-# Hugo Responsive Background Images
+# Hugo Responsive Background Images  [<img src="https://d33wubrfki0l68.cloudfront.net/c38c7334cc3f23585738e40334284fddcaf03d5e/2e17c/images/hugo-logo-wide.svg" align="right" width="250">](https://gohugo.io/)
+
+[![GitHub License](https://img.shields.io/github/license/future-wd/hugo-responsive-background-images?style=flat-square)](https://github.com/future-wd/hugo-responsive-background-images/blob/master/LICENSE)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/future-wd/hugo-responsive-background-images?style=flat-square)](https://github.com/future-wd/hugo-responsive-background-images/)
+[![GoLang version"](https://img.shields.io/github/go-mod/go-version/future-wd/hugo-responsive-background-images?style=flat-square)](https://go.dev/)
+<!-- [![Awesome](https://awesome.re/badge-flat.svg)](https://github.com/budparr/awesome-hugo) -->
 
 This module generates background images at specified widths and generates CSS with respective breakpoints. There is an option to lazyload. All you need to do is specify the image (page resource) and CSS selector on the page's front matter.
 
@@ -158,7 +163,7 @@ v0.04
 - markdown parameters are sanitized with error messages
 - placeholder option of lqip/dominant/color code
 
-v0.0.5
+v0.0.5.0.0.6
 
 - moved common utils to github.com/future-wd/hugo-imaging-common
 - level based sanitization and error messages
@@ -177,7 +182,7 @@ v0.0.5
 
 #### TODO
 
-v0.0.5
+v0.0.7
 - update readme to reflect new widths structure and check other params
 - check for caching issues and use partialCached
 - should there be a disable_lazy site param to override? or does lazyload degrade gracefully if not js class?
